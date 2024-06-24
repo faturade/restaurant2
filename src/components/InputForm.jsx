@@ -36,4 +36,50 @@ InputForm.defaultProps = {
   error: null
 };
 
-export default InputForm;
+const Form = ({ formData, setFormData, errors }) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  return (
+    <div className="grid gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <InputForm
+          label="Name"
+          type="text"
+          placeholder="Enter your name"
+          value={formData.name}
+          onChange={handleChange}
+          error={errors.name}
+        />
+        <InputForm
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          value={formData.email}
+          onChange={handleChange}
+          error={errors.email}
+        />
+      </div>
+      {/* Add other fields below */}
+    </div>
+  );
+};
+
+Form.propTypes = {
+  formData: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+  }).isRequired,
+  setFormData: PropTypes.func.isRequired,
+  errors: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+  }).isRequired,
+};
+
+export default Form;

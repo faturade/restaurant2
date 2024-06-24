@@ -5,12 +5,14 @@ import { faClock, faLocationDot, faFilePen } from '@fortawesome/free-solid-svg-i
 import Resto from '../../src/assets/image/resto2.jpg';
 import MenuImage from '../../src/assets/image/Food1.jpg';
 import MenuThumbnail from '../../src/assets/image/Food2.jpg';
+import Testimonial from '../components/Testimonial';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-custom-orange">
+    <div className="min-h-screen flex flex-col">
       {/* Bagian atas */}
-      <div className="flex flex-col md:flex-row justify-between items-center p-8 pt-20 mt-auto">
+      <div className="flex flex-col md:flex-row justify-between items-center p-8 pt-20 mt-auto bg-custom-orange">
         <div className="md:w-1/2 w-full mb-8 md:mb-8 px-8 relative" style={{ right: '-5rem' }}>
           <h1 className="text-4xl font-bold text-white mb-4">Welcome to</h1>
           <h1 className="text-6xl font-bold text-white mb-4">Restaurant</h1>
@@ -19,10 +21,9 @@ const Home = () => {
             eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus.lorem21
             eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus.lorem21
           </p>
-          <Button
-            label="Learn More"
-            onClick={() => console.log('Learn More clicked')}
-          />
+          <Link to="/reservation">
+            <Button text="Reservation" onClick={() => console.log('Reservation clicked')} />
+          </Link>
         </div>
 
         <div className="md:w-1/2 w-full flex justify-center items-center relative">
@@ -84,9 +85,9 @@ const Home = () => {
             }}
           />
         </div>
-        <div className="md:w-1/2 w-full mb-8 md:mb-8 px-8 relative" style={{marginRight: '6rem'}}>
+        <div className="md:w-1/2 w-full mb-8 md:mb-8 px-8 relative" style={{ marginRight: '6rem' }}>
           <h4 className="text-4xl font-bold text-dark mb-4">The Story</h4>
-          <p className="text-dark mb-6" style={{ position: 'relative', marginTop: '10px', fontWeight: '200'}}>
+          <p className="text-dark mb-6" style={{ position: 'relative', marginTop: '10px', fontWeight: '200' }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices
             eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus.lorem21
           </p>
@@ -110,130 +111,184 @@ const Home = () => {
       </div>
 
       {/* Daftar menu */}
-      <div className="bg-white p-8">
-        <h2 className="text-3xl font-bold mb-8">Menu</h2>
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="md:w-1/2 w-full mb-8 md:mb-0">
-            <h3 className="text-2xl font-bold mb-4">Delicious Dish</h3>
-            <p className="text-dark mb-6" style={{ position: 'relative', marginTop: '10px', fontWeight: '200' }}>
+      <div className="item-center p-8 my-8 bg-white">
+        <div className="flex flex-col md:flex-row mb-8">
+          <div className="md:w-1/2 w-full mb-8 md:mb-0 flex flex-col items-center">
+            <div className="w-full max-w-xs text-center mb-4">
+              <h2 className="text-3xl font-bold mb-8" style={{ borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block', fontSize: '30px', color: '#FF7517' }}>Menu</h2>
+              <h3 className="text-2xl font-bold mb-4" style={{ color: '#FF7517' }}>Delicious Dish</h3>
+              <p className="text-dark mb-6" style={{ position: 'relative', marginTop: '10px', fontWeight: '200' }}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices
                 eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus.lorem21
               </p>
+            </div>
             <img
               src={MenuImage}
               alt="Menu"
-              className="w-full h-auto mb-4"
+              className="w-1/2 h-auto"
               style={{
-                marginLeft: '9rem',
                 height: '400px',
                 width: '250px'
               }}
             />
           </div>
-          <div className="md:w-1/2 w-full flex flex-col space-y-4">
-            <h2 className="text-3xl font-bold mb-8">Menu</h2>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-            <div className="flex justify-between items-center">
-              <p className="text-lg font-semibold">Dish Name</p>
-              <p className="text-gray-500">+-------------------------+</p>
-              <p className="text-gray-500">$12.99</p>
-            </div>
 
-            </div>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-               <div className="flex justify-between items-center">
-                <p className="text-lg font-semibold">Dish Name</p>
-                <p className="text-gray-500">+-------------------------+</p>
-                <p className="text-gray-500">$12.99</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-               <div className="flex justify-between items-center">
+          <div className="flex flex-col space-y-4">
+            <div className="w-full flex flex-col space-y-4">
+              <h2 className="text-3xl font-bold mb-8">Menu</h2>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
                   <p className="text-lg font-semibold">Dish Name</p>
                   <p className="text-gray-500">+-------------------------+</p>
                   <p className="text-gray-500">$12.99</p>
                 </div>
-            </div>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-              <div className="flex justify-between items-center">
-                <p className="text-lg font-semibold">Dish Name</p>
-                <p className="text-gray-500">+-------------------------+</p>
-                <p className="text-gray-500">$12.99</p>
               </div>
-            </div>
-            <h2 className="text-3xl font-bold mb-8">Menu</h2>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-            <div className="flex justify-between items-center">
-              <p className="text-lg font-semibold">Dish Name</p>
-              <p className="text-gray-500">+-------------------------+</p>
-              <p className="text-gray-500">$12.99</p>
-            </div>
-
-            </div>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-               <div className="flex justify-between items-center">
-                <p className="text-lg font-semibold">Dish Name</p>
-                <p className="text-gray-500">+-------------------------+</p>
-                <p className="text-gray-500">$12.99</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-               <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
                   <p className="text-lg font-semibold">Dish Name</p>
                   <p className="text-gray-500">+-------------------------+</p>
                   <p className="text-gray-500">$12.99</p>
                 </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center">
-              <img
-                src={MenuThumbnail}
-                alt="Dish"
-                className="w-16 h-16 rounded-full mr-4"
-              />
-              <div className="flex justify-between items-center">
-                <p className="text-lg font-semibold">Dish Name</p>
-                <p className="text-gray-500">+-------------------------+</p>
-                <p className="text-gray-500">$12.99</p>
+            <div className="w-full flex flex-col space-y-4">
+              <h2 className="text-3xl font-bold mb-8">Menu2</h2>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <img
+                  src={MenuThumbnail}
+                  alt="Dish"
+                  className="w-16 h-16 rounded-full mr-4"
+                />
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-lg font-semibold">Dish Name</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">$12.99</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <Testimonial />
     </div>
   );
 };
