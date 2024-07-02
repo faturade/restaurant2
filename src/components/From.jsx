@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from '../assets/image/resto2.jpg';
 
 const ReservationForm = () => {
   const [formData, setFormData] = useState({
@@ -20,70 +21,136 @@ const ReservationForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form data:', formData);
-    // Tambahkan logika pengiriman form di sini
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 border rounded-lg shadow-lg bg-white">
-      <div className="flex mb-4">
-        <div className="mr-2 w-1/2">
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          />
+    <div
+      style={{
+        backgroundImage: `url(${Image})`,
+        width: '100%',
+        height: '80vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // You can change this color and opacity
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
+        }}
+      ></div>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-2xl mx-auto p-6 border shadow-lg bg-white"
+        style={{
+          width: '600px',
+          height: '370px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+          zIndex: 2,
+        }}
+      >
+        <div className="text-center mb-8">
+          <h2
+            style={{
+              borderBottom: '1px solid #2C2727',
+              borderTop: '1px solid #2C2727',
+              display: 'inline-block',
+              fontSize: '20px',
+              margin: '1rem',
+              color: '#FF7517',
+            }}
+          >
+            Reservation
+          </h2>
+          <p style={{ fontSize: '30px', color: '#FF7517' }}>Book Your Table Now</p>
         </div>
-        <div className="ml-2 w-1/2">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          />
+
+        <div className="flex mb-6">
+          <div className="mr-2 w-1/2">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ width: '220px', color: '#FF7517' }}
+            />
+          </div>
+          <div className="ml-2 w-1/2">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ width: '220px', color: '#FF7517' }}
+            />
+          </div>
         </div>
-      </div>
-      <div className="mb-4 flex">
-        <input
-          type="date"
-          id="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          type="time"
-          id="time"
-          name="time"
-          value={formData.time}
-          onChange={handleChange}
-          className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          type="number"
-          id="numberOfGuests"
-          name="numberOfGuests"
-          placeholder="Number of Guests"
-          value={formData.numberOfGuests}
-          onChange={handleChange}
-          className="mt-1 p-2 block w-full border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-      <button type="submit" className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-        Submit
-      </button>
-    </form>
+        <div className="flex mb-2">
+          <div className="mr-1 w-1/2">
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: '#FF7517' }}
+            />
+          </div>
+          <div className="ml-1 w-1/2">
+            <input
+              type="time"
+              id="time"
+              name="time"
+              value={formData.time}
+              onChange={handleChange}
+              className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: '#FF7517' }}
+            />
+          </div>
+          <div className="ml-1 w-1/2">
+            <input
+              type="number"
+              id="numberOfGuests"
+              name="numberOfGuests"
+              placeholder="Number"
+              value={formData.numberOfGuests}
+              onChange={handleChange}
+              className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: '#FF7517' }}
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="mt-2 py-2 px-4 text-white font-semibold focus:outline-none focus:ring-0 focus:border-none"
+          style={{
+            background: '#FF7517',
+          }}
+        >
+          Book a Table
+        </button>
+      </form>
+    </div>
   );
 };
 

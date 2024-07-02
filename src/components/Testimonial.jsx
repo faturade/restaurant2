@@ -55,7 +55,7 @@ function TestimonialSlider() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-orange-500">
             <div className="max-w-6xl p-4 overflow-hidden">
-             <h2 className="mb-8 " style={{ borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block', fontSize: '15px', color: '#ffffff' }}>Testimonial</h2>
+             <h2 className="mb-8 " style={{ borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block', fontSize: '20px', color: '#ffffff' }}>Testimonial</h2>
                 <p className="text-white text-center mb-2 font-extralight">See what our customers are saying</p>
                 <p className="text-white text-center mb-8 font-extralight">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos nam debitis aliquid saepe dolorem. Provident, sapiente maiores! Dolorum asperiores quas necessitatibus porro. Eius officiis voluptas possimus quidem. Quis, delectus impedit.</p>
                 <div className="relative w-full max-w-6xl p-4 overflow-hidden">

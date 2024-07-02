@@ -10,8 +10,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-800 p-4">
       <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-between px-4 mx-auto">
-          <p className="mr-2" style={{ borderBottom: '1px solid white', fontSize: '.8rem' }}>Instagram Feed</p>
-
+          <p className="mr-2" style={{ borderBottom: '1px solid white', fontSize: '1rem' }}>Instagram Feed</p>
           <div>
             <Link to="/instagram" className="mr-4">
               <FontAwesomeIcon icon={faInstagram} className="text-white text-xl" />
@@ -26,17 +25,15 @@ const Footer = () => {
               <FontAwesomeIcon icon={faTwitter} className="text-white text-xl" />
             </Link>
           </div>
-
       </div>
 
-      <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-between px-4 mx-auto">
+      <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-around px-4 mx-auto">
         {/* Contact Information */}
         <div>
           <h3 className="text-xl font-bold mb-4">Contact Us</h3>
           <p className="text-sm">5 Rue Dalau, 75015 Paris</p>
           <p className="text-sm">(123)456789664</p>
         </div>
-
         {/* Newsletter Subscription */}
         <div className="md:w-1/3 w-full flex flex-col items-center">
           <h3 className="text-xl font-bold mb-4">Subscribe to our Newsletter</h3>
@@ -66,7 +63,6 @@ const Footer = () => {
           <p className="text-sm">Sunday: Closed</p>
         </div>
       </div>
-
       <div className="container mx-auto text-center text-white mt-4">
         &copy; 2024 My Website. All rights reserved.
       </div>

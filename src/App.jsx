@@ -5,11 +5,11 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
-import Blog from './pages/Blog';
 import Contact from './pages/Contact';
-import Galery from './pages/Galery';
 import Menu from './pages/Menu';
 import Reservation from './pages/Reservation';
+import Form from './components/From'
+// import NotFound from './pages/NotFound';
 
 const App = () => {
   return (
@@ -21,12 +21,12 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/gallery" element={<Galery />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/reservation" element={<Reservation />} />
 
         </Routes>
+        {/* <NotFound /> */}
+        <Form />
         <Footer/>
       </div>
     </Router>
