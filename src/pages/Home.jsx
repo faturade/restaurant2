@@ -1,22 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faLocationDot, faFilePen } from '@fortawesome/free-solid-svg-icons';
 import Resto from '../../src/assets/image/resto2.jpg';
 import MenuImage from '../../src/assets/image/Food1.jpg';
-import MenuThumbnail from '../../src/assets/image/Food2.jpg';
 import SignatureImage from '../assets/image/td.webp';
-import Testimonial from '../components/Testimonial';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const [menuData, setMenuData] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      const API_URL = 'https://dt6rn7p5-3000.asse.devtunnels.ms/client/menu/list-menu?kategori=makanan&sort_by=harga&sort_key=asc&nama_menu=';
+
+      try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Fetched data:', data);
+
+        if (Array.isArray(data.data.list)) {
+          setMenuData(data.data.list);
+        } else {
+          setMenuData([]);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+        setError(error.message);
+      }
+    };
+
+    fetchMenuData();
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Bagian atas */}
       <div className="flex flex-col md:flex-row justify-between items-center p-8 pt-20 mt-auto bg-custom-orange">
         <div className="md:w-1/2 w-full mb-8 md:mb-8 px-8 relative" style={{ right: '-5rem', marginLeft: '3.5rem' }}>
-          <h1 className="text-4xl text-white mb-4">Welcome to</h1>
-          <h1 className="text-6xl text-white mb-4">Restaurant</h1>
+          <h1 className="text-6xl text-white mb-4">Welcome to</h1>
+          <h1 className="text-6xl text-white mb-4">Restaurante</h1>
           <p className="text-white mb-6" style={{ position: 'relative', marginTop: '10px', fontWeight: '200' }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices
             eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus.lorem21
@@ -43,7 +76,7 @@ const Home = () => {
       </div>
 
       <div className='mb-8'>
-          {/* Bagian Informasi */}
+        {/* Bagian Informasi */}
         <div className="p-12 flex justify-evenly items-center" style={{ paddingTop: '6rem', background: '#F6F4F4' }}>
           <div className="flex items-center space-x-2">
             <div className="bg-custom-orange p-3 flex items-center justify-center rounded-full" style={{ width: '3rem', height: '3rem' }}>
@@ -151,41 +184,24 @@ const Home = () => {
           </div>
 
           <div className="md:w-1/2 w-full flex flex-col space-y-4">
-            <h2 className="text-3xl font-bold mb-8 text-custom-orange">Menu</h2>
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex items-center">
+            <h2 className="font-bold mb-4" style={{ color: '#FF7517', fontSize: '40px' }}>Starters</h2>
+            {menuData.map((item, index) => (
+              <div key={index} className="flex items-center mb-4">
                 <img
-                  src={MenuThumbnail}
-                  alt="Dish"
+                  src={`https://dt6rn7p5-3000.asse.devtunnels.ms${item.gambar}`}
+                  alt={item.nama_menu}
                   className="w-16 h-16 rounded-full mr-4"
                 />
-                <div className="flex">
-                  <p className="text-lg font-semibold text-custom-orange">Dish Name</p>
-                  <p className="text-gray-500 flex-grow text-center">+-------------------------+</p>
-                  <p className="text-gray-500">$12.99</p>
-                </div>
-              </div>
-            ))}
-            <h2 className="text-3xl font-bold mb-8 text-custom-orange">Menu</h2>
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex items-center">
-                <img
-                  src={MenuThumbnail}
-                  alt="Dish"
-                  className="w-16 h-16 rounded-full mr-4"
-                />
-                <div className="flex">
-                  <p className="text-lg font-semibold text-custom-orange">Dish Name</p>
-                  <p className="text-gray-500 flex-grow text-center">+-------------------------+</p>
-                  <p className="text-gray-500">$12.99</p>
+                <div className="flex mx-4 items-center w-full">
+                  <p className="text-lg font-semibold text-custom-orange">{item.nama_menu}</p>
+                  <p className="text-gray-500">+-------------------------+</p>
+                  <p className="text-gray-500">${item.harga}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      <Testimonial />
     </div>
   );
 };

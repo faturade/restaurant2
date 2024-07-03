@@ -1,4 +1,4 @@
-const API_URL = 'https://api.example.com';
+const API_URL = 'https://dt6rn7p5-3000.asse.devtunnels.ms/:3000/client/menu/list-menu?kategori=makanan&sort_by=harga&sort_key=asc&nama_menu=null';
 
 const fetchData = async () => {
   try {

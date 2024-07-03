@@ -8,8 +8,6 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Menu from './pages/Menu';
 import Reservation from './pages/Reservation';
-import Form from './components/From'
-// import NotFound from './pages/NotFound';
 
 const App = () => {
   return (
@@ -23,10 +21,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/reservation" element={<Reservation />} />
-
         </Routes>
-        {/* <NotFound /> */}
-        <Form />
         <Footer/>
       </div>
     </Router>

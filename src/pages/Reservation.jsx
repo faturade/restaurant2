@@ -122,7 +122,7 @@ const Reservation = () => {
             className="h-auto"
             style={{
               height: '450px',
-              width: '300px'
+              width: '300px',
             }}
           />
         </div>
@@ -136,6 +136,7 @@ const Reservation = () => {
             style={{
               height: '450px',
               width: '350px',
+              marginLeft: '5rem',
             }}
           />
         </div>

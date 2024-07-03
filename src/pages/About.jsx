@@ -6,6 +6,7 @@ import StyleGuild from '../components/StyleGuild';
 import TestimonialSlider from '../components/Testimonial';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAppleAlt, faCarrot, faFish, faLeaf } from '@fortawesome/free-solid-svg-icons';
+import Form from '../components/From'
 
 const About = () => {
   const handleButtonClick = () => {
@@ -39,52 +40,52 @@ const About = () => {
       <div className="bg-cover bg-center w-full max-h-96 p-8" style={{ backgroundImage: `url(${aboutImage})`, backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
         <div className="flex justify-around items-center p-4">
           <div className="text-white mx-4 flex flex-col items-center border-r-2 border-white">
-            <FontAwesomeIcon icon={faAppleAlt} className="text-4xl mb-2" />
+            <FontAwesomeIcon icon={faAppleAlt} className="text-4xl mb-2 text-custom-orange" />
             <h4 className="text-xl font-bold mb-2">Fresh Product</h4>
-            <p className="text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
+            <p className="text-center font-thin">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
           </div>
           <div className="text-white mx-4 flex flex-col items-center border-r-2 border-white">
-            <FontAwesomeIcon icon={faFish} className="text-4xl mb-2" />
+            <FontAwesomeIcon icon={faFish} className="text-4xl mb-2 text-custom-orange" />
             <h4 className="text-xl font-bold mb-2">Fresh Product</h4>
-            <p className="text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
+            <p className="text-center font-thin">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
           </div>
           <div className="text-white mx-4 flex flex-col items-center border-r-2 border-white">
-            <FontAwesomeIcon icon={faCarrot} className="text-4xl mb-2" />
+            <FontAwesomeIcon icon={faCarrot} className="text-4xl mb-2 text-custom-orange" />
             <h4 className="text-xl font-bold mb-2">Fresh Product</h4>
-            <p className="text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
+            <p className="text-center font-thin">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
           </div>
           <div className="text-white mx-4 flex flex-col items-center">
-            <FontAwesomeIcon icon={faLeaf} className="text-4xl mb-2" />
+            <FontAwesomeIcon icon={faLeaf} className="text-4xl mb-2 text-custom-orange" />
             <h4 className="text-xl font-bold mb-2">Fresh Product</h4>
-            <p className="text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
+            <p className="text-center font-thin">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, ipsum?</p>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col items-center my-20">
         <div className="text-center mb-4">
-          <h2 className="text-2xl font-bold">Team</h2>
-          <p>Meet Our Professional Chefs</p>
+          <h2 className="text-2xl font-light mb-4 text-custom-orange"style={{ borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block' }}>Team</h2>
+          <p className="text-3xl text-custom-orange font-semibold">Meet Our Professional Chefs</p>
         </div>
         <div className="flex justify-around flex-wrap">
           <div className="flex flex-col items-center m-4">
             <img src="https://via.placeholder.com/150" alt="Chef" className="mb-2" />
-            <h2 className="text-xl font-bold">Olivia</h2>
+            <h2 className="text-xl font-bold text-custom-orange">Olivia</h2>
             <p>Master Chef</p>
           </div>
           <div className="flex flex-col items-center m-4">
             <img src="https://via.placeholder.com/150" alt="Chef" className="mb-2" />
-            <h2 className="text-xl font-bold">Olivia</h2>
+            <h2 className="text-xl font-bold text-custom-orange">Olivia</h2>
             <p>Master Chef</p>
           </div>
           <div className="flex flex-col items-center m-4">
             <img src="https://via.placeholder.com/150" alt="Chef" className="mb-2" />
-            <h2 className="text-xl font-bold">Olivia</h2>
+            <h2 className="text-xl font-bold text-custom-orange">Olivia</h2>
             <p>Master Chef</p>
           </div>
           <div className="flex flex-col items-center m-4">
             <img src="https://via.placeholder.com/150" alt="Chef" className="mb-2" />
-            <h2 className="text-xl font-bold">Olivia</h2>
+            <h2 className="text-xl font-bold text-custom-orange">Olivia</h2>
             <p>Master Chef</p>
           </div>
         </div>
@@ -92,10 +93,10 @@ const About = () => {
 
       <TestimonialSlider />
 
-      <div className="flex flex-col items-center p-8 my-20">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold">Gallery</h2>
-          <p className="text-lg text-gray-600">Watch Me Make</p>
+      <div className="flex flex-col items-center p-8 my-12">
+        <div className="text-center mb-2">
+          <h2 className="text-2xl font-light mb-4 text-custom-orange"style={{ borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block' }}>Gallery</h2>
+          <p className="text-3xl text-custom-orange font-semibold">Watch Me Make</p>
         </div>
         <div className="gap-4">
           <div className="flex justify-around items-center p-4">
@@ -113,6 +114,7 @@ const About = () => {
           </div>
         </div>
       </div>
+      <Form />
     </div>
   );
 }
