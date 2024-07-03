@@ -17,7 +17,7 @@ import {
 const Contact = () => {
   return (
     <div>
-      <StyleGuild activeButton="Contact Us" />
+      {/* <StyleGuild activeButton="Contact Us" /> */}
       <div className="container mx-auto p-6 my-8">
         <div className="flex flex-col md:flex-row justify-between">
           <div className="md:w-1/2 p-4 bg-[#FFF8F5] mt-6">
@@ -28,8 +28,8 @@ const Contact = () => {
                 <FontAwesomeIcon icon={faLocationDot} className="text-white text-lg" />
               </div>
               <div>
-                <p className="text-md font-semibold" style={{ color: '#FF7517' }}>Location Us</p>
-                <p className="text-gray-500 text-sm">Riverside 25, San Francisco, California</p>
+                <p className="text-md font-semibold" style={{ color: '#FF7517' }}>Lokasi</p>
+                <p className="text-gray-500 text-sm">Jalan Lintas Sipirok-Tarutung, Desa Purbatua, Kecamatan Sipirok, Kabupaten Tapanuli Selatan, Sumatera Utara</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 mb-4">

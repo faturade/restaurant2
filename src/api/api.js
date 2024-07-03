@@ -1,11 +1,15 @@
-const API_URL = 'https://api.example.com';
+const API_URL = "https://dt6rn7p5-3000.asse.devtunnels.ms/";
 
-const fetchData = async () => {
+const fetchData = async (url, params) => {
+  let query = ``;
+  if (params) {
+    query += `?` + new URLSearchParams(params).toString();
+  }
   try {
-    const response = await fetch(`${API_URL}/data`);
+    const response = await fetch(`${API_URL}${url}${query}`);
     return await response.json();
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
     throw error;
   }
 };
@@ -13,15 +17,15 @@ const fetchData = async () => {
 const addData = async (newData) => {
   try {
     const response = await fetch(`${API_URL}/data`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newData),
     });
     return await response.json();
   } catch (error) {
-    console.error('Error adding data:', error);
+    console.error("Error adding data:", error);
     throw error;
   }
 };
@@ -29,15 +33,15 @@ const addData = async (newData) => {
 const updateData = async (id, newData) => {
   try {
     const response = await fetch(`${API_URL}/data/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newData),
     });
     return await response.json();
   } catch (error) {
-    console.error('Error updating data:', error);
+    console.error("Error updating data:", error);
     throw error;
   }
 };
@@ -45,15 +49,15 @@ const updateData = async (id, newData) => {
 const partialUpdateData = async (id, newData) => {
   try {
     const response = await fetch(`${API_URL}/data/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newData),
     });
     return await response.json();
   } catch (error) {
-    console.error('Error updating data:', error);
+    console.error("Error updating data:", error);
     throw error;
   }
 };
@@ -61,10 +65,10 @@ const partialUpdateData = async (id, newData) => {
 const deleteData = async (id) => {
   try {
     await fetch(`${API_URL}/data/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   } catch (error) {
-    console.error('Error deleting data:', error);
+    console.error("Error deleting data:", error);
     throw error;
   }
 };

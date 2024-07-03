@@ -8,7 +8,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Menu from './pages/Menu';
 import Reservation from './pages/Reservation';
-import Form from './components/From'
+// import Form from './components/From'
 // import NotFound from './pages/NotFound';
 
 const App = () => {
@@ -26,7 +26,7 @@ const App = () => {
 
         </Routes>
         {/* <NotFound /> */}
-        <Form />
+        {/* <Form /> */}
         <Footer/>
       </div>
     </Router>

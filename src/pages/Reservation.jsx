@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import StyleGuild from '../components/StyleGuild';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUtensils, faTruck, faShieldAlt, faClock } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from "react";
+import Image from "../assets/image/resto2.jpg";
+import StyleGuild from "../components/StyleGuild";
 
-const Reservation = () => {
+const ReservationForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    date: '',
-    time: '',
-    person: '',
-    numberOfGuests: '',
+    nama: "",
+    email: "",
+    tgl_kunjungan: "",
+    time: "",
+    jumlah_orang: "",
+    keterangan: "",
   });
 
   const handleChange = (e) => {
@@ -23,148 +22,154 @@ const Reservation = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form data:', formData);
+    console.log("Form data:", formData);
   };
 
   return (
-    <div>
-      <StyleGuild activeButton="Booking Page" />
-      <div className="p-8 bg-white flex flex-col md:flex-row items-center my-20">
-        <div className="max-w-lg mx-auto">
-          <h2 className="mb-4" style={{ color: '#FF7517', fontSize: '15px', borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block' }}>RESERVATION</h2>
-          <h2 className="mb-4" style={{ color: '#FF7517', fontSize: '30px' }}>Book Your Table Now</h2>
-          <p className="mb-8">Lorem ipsum, dolor sit amet consectetur adipisicing elit. A, officia magnam, eveniet officiis neque inventore laboriosam.</p>
-          <form onSubmit={handleSubmit} className="flex flex-wrap -mx-2">
-            <div className="w-full md:w-1/2 px-2 mb-4">
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Name"
-                value={formData.name}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-                style={{ color: '#FF7517' }}
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-2 mb-4">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-                style={{ color: '#FF7517' }}
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-2 mb-4">
-              <input
-                type="person"
-                id="person"
-                name="person"
-                placeholder="Person"
-                value={formData.person}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-                style={{ color: '#FF7517' }}
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-2 mb-4">
-              <input
-                id="date"
-                name="date"
-                placeholder="Date"
-                value={formData.date}
-                onChange={handleChange}
-                className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-                style={{ color: '#FF7517' }}
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-2 mb-4">
-              <input
-                id="time"
-                name="time"
-                placeholder="Time"
-                value={formData.time}
-                onChange={handleChange}
-                className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-                style={{ color: '#FF7517' }}
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-2 mb-4">
-              <input
-                id="numberOfGuests"
-                name="numberOfGuests"
-                placeholder="Number of Guests"
-                value={formData.numberOfGuests}
-                onChange={handleChange}
-                className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-                style={{ color: '#FF7517' }}
-              />
-            </div>
-            <div className="w-full px-2">
-              <button
-                type="submit"
-                className="text-white font-bold bg-orange-500 mt-4 py-2 px-4 rounded w-full"
-                style={{ backgroundColor: '#FF7517' }}
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+    <div
+      style={{
+        backgroundImage: `url(${Image})`,
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // You can change this color and opacity
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
+        }}
+      ></div>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-2xl mx-auto p-6 border shadow-lg bg-white"
+        style={{
+          width: "600px",
+          height: "370px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        <div className="text-center mb-8">
+          <p style={{ fontSize: "30px", color: "#FF7517" }}>
+            Book Your Table Now
+          </p>
         </div>
-        <div className="w-full md:w-1/3 mt-8 md:mt-0 flex justify-center md:justify-start">
-          <img
-            src="https://via.placeholder.com/300x450"
-            alt="Placeholder"
-            className="h-auto"
-            style={{
-              height: '450px',
-              width: '300px'
-            }}
-          />
-        </div>
-      </div>
-      <div className="p-8 bg-white flex flex-col md:flex-row items-center my-20">
-        <div className="w-full md:w-1/2 flex justify-center">
-          <img
-            src="https://via.placeholder.com/300x450"
-            alt="Placeholder"
-            className="h-auto"
-            style={{
-              height: '450px',
-              width: '350px',
-            }}
-          />
-        </div>
-        <div className="w-full md:w-1/2 px-4">
-          <h2 className="mb-4" style={{ color: '#FF7517', fontSize: '15px', borderBottom: '1px solid #3E3939', borderTop: '1px solid #3E3939', display: 'inline-block' }}>WHY CHOOSE US</h2>
-          <h2 className="mb-4" style={{ color: '#FF7517', fontSize: '30px' }}>why We Are The Best</h2>
-          <p className="mb-4">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut, dolorem Lorem, ipsum dolor sit amet consectetur adipisicing elit..</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center border p-2">
-              <FontAwesomeIcon icon={faUtensils} className="text-xl" style={{ color: '#FF7517' }} />
-              <h3 className="text-lg font-medium ml-2">Fresh Food</h3>
-            </div>
-            <div className="flex items-center border p-2">
-              <FontAwesomeIcon icon={faTruck} className="text-xl" style={{ color: '#FF7517' }} />
-              <h3 className="text-lg font-medium ml-2">Fast Delivery</h3>
-            </div>
-            <div className="flex items-center border p-2">
-              <FontAwesomeIcon icon={faShieldAlt} className="text-xl" style={{ color: '#FF7517' }} />
-              <h3 className="text-lg font-medium ml-2">Quality Maintain</h3>
-            </div>
-            <div className="flex items-center border p-2">
-              <FontAwesomeIcon icon={faClock} className="text-xl" style={{ color: '#FF7517' }} />
-              <h3 className="text-lg font-medium ml-2">24/7 Service</h3>
-            </div>
+
+        <div className="flex mb-6">
+          <div className="mr-2 w-1/2">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Nama"
+              value={formData.name}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ width: "220px", color: "#FF7517" }}
+            />
+          </div>
+          <div className="ml-2 w-1/2">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ width: "220px", color: "#FF7517" }}
+            />
           </div>
         </div>
-      </div>
+        <div className="flex mb-6">
+          <div className="mr-2 w-1/2">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Nomor Hp"
+              value={formData.name}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ width: "220px", color: "#FF7517" }}
+            />
+          </div>
+          <div className="ml-2 w-1/2">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Keterangan"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ width: "220px", color: "#FF7517" }}
+            />
+          </div>
+        </div>
+        <div className="flex mb-2">
+          <div className="mr-1 w-1/2">
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            />
+          </div>
+          <div className="ml-1 w-1/2">
+            <input
+              type="time"
+              id="time"
+              name="time"
+              value={formData.time}
+              onChange={handleChange}
+              className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            />
+          </div>
+          <div className="ml-1 w-1/2">
+            <input
+              type="number"
+              id="numberOfGuests"
+              name="numberOfGuests"
+              placeholder="Jumlah Orang"
+              value={formData.numberOfGuests}
+              onChange={handleChange}
+              className="mt-2 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="mt-2 py-2 px-4 text-white font-semibold focus:outline-none focus:ring-0 focus:border-none"
+          style={{
+            background: "#FF7517",
+          }}
+        >
+          Booking
+        </button>
+      </form>
     </div>
   );
 };
 
-export default Reservation;
+export default ReservationForm;

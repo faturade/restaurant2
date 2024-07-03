@@ -1,42 +1,66 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram } from '@fortawesome/free-brands-svg-icons';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import React from "react";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-800 p-4">
       <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-between px-4 mx-auto">
-          <p className="mr-2" style={{ borderBottom: '1px solid white', fontSize: '1rem' }}>Instagram Feed</p>
-          <div>
-            <Link to="/instagram" className="mr-4">
-              <FontAwesomeIcon icon={faInstagram} className="text-white text-xl" />
-            </Link>
-            <Link to="/facebook" className="mr-4">
-              <FontAwesomeIcon icon={faFacebook} className="text-white text-xl" />
-            </Link>
-            <Link to="/whatsapp" className="mr-4">
-              <FontAwesomeIcon icon={faWhatsapp} className="text-white text-xl" />
-            </Link>
-            <Link to="/twitter" className="mr-4">
-              <FontAwesomeIcon icon={faTwitter} className="text-white text-xl" />
-            </Link>
-          </div>
+        <div>
+          <Link
+            to="https://www.instagram.com/"
+            className="mr-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon
+              icon={faInstagram}
+              className="text-white text-xl"
+            />
+          </Link>
+          <Link
+            to="https://www.facebook.com/"
+            className="mr-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faFacebook} className="text-white text-xl" />
+          </Link>
+          <Link
+            to="https://web.whatsapp.com/"
+            className="mr-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faWhatsapp} className="text-white text-xl" />
+          </Link>
+          <a
+            href="https://x.com/"
+            className="mr-4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faTwitter} className="text-white text-xl" />
+          </a>
+        </div>
       </div>
 
       <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-around px-4 mx-auto">
         {/* Contact Information */}
         <div>
-          <h3 className="text-xl font-bold mb-4">Contact Us</h3>
-          <p className="text-sm">5 Rue Dalau, 75015 Paris</p>
-          <p className="text-sm">(123)456789664</p>
+          <h3 className="text-xl font-bold mb-4">Kontak Kami</h3>
+          <p className="text-sm">Jl. Tarutung Desa Purbatua</p>
+          <p className="text-sm">0821-6772-9018</p>
         </div>
         {/* Newsletter Subscription */}
         <div className="md:w-1/3 w-full flex flex-col items-center">
-          <h3 className="text-xl font-bold mb-4">Subscribe to our Newsletter</h3>
+          <h3 className="text-xl font-bold mb-4">
+            Subscribe to our Newsletter
+          </h3>
           <p className="mb-4 text-sm">Get the latest updates and offers.</p>
           <form className="flex items-center w-full">
             <input
@@ -47,7 +71,7 @@ const Footer = () => {
             <Link to="/submit" className="text-center">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => console.log('Subscribe clicked')}
+                onClick={() => console.log("Subscribe clicked")}
               >
                 Submit
               </button>
@@ -57,10 +81,8 @@ const Footer = () => {
 
         {/* Opening Hours */}
         <div>
-          <h3 className="text-xl font-bold mb-4">Opening Hours</h3>
-          <p className="text-sm">Monday - Friday: 9:00 AM - 9:00 PM</p>
-          <p className="text-sm">Saturday: 10:00 AM - 8:00 PM</p>
-          <p className="text-sm">Sunday: Closed</p>
+          <h3 className="text-xl font-bold mb-4">Jam Buka</h3>
+          <p className="text-sm">Senin - Minggu 9:00 AM - 9:00 PM</p>
         </div>
       </div>
       <div className="container mx-auto text-center text-white mt-4">
