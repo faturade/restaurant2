@@ -7,6 +7,8 @@ import { currencyFormat } from "../utils/currency";
 import Swal from "sweetalert2";
 import CountdownTimer from "../components/CountdownTimer";
 import Modal from "../components/Modal";
+import Loading from "../components/Loading";
+import QRCode from "react-qr-code";
 
 let url = `https://dt6rn7p5-3000.asse.devtunnels.ms/`;
 const ReservationForm = () => {
@@ -17,6 +19,7 @@ const ReservationForm = () => {
     jumlah_orang: "",
     keterangan: "",
     email: "",
+    jam: "",
     ada_menu: false,
   });
 
@@ -40,6 +43,8 @@ const ReservationForm = () => {
   const [virtualAccount, setVirtualAccount] = useState(null);
   const [detailPayment, setDetailPayment] = useState(null);
   const [showRinciPembayaran, setShowRinciPembayaran] = useState(false);
+  const [loadingBackdrop, setLoadingBackdrop] = useState(false);
+  const [showQr, setShowQr] = useState(false);
 
   const loadOptions = async (inputValue, callback) => {
     try {
@@ -233,20 +238,32 @@ const ReservationForm = () => {
       if (!(data.meta_data.status <= 400)) {
         throw new Error(data.meta_data.message);
       }
-      const payment = Object.assign({
-        id_payment: data.data.xendit_response.id,
-        virtual_account:
-          data.data.xendit_response.paymentMethod.virtualAccount
-            .channelProperties.virtualAccountNumber,
-        expired:
-          data.data.xendit_response.paymentMethod.virtualAccount
-            .channelProperties.expiresAt,
-        channel:
-          data.data.xendit_response.paymentMethod.virtualAccount.channelCode,
-        amount: data.data.xendit_response.amount,
-      });
-      localStorage.setItem("payment", JSON.stringify(payment));
-      setDetailPayment(payment);
+      if (selectedMethodPembayaran?.jenis !== "TUNAI") {
+        const payment = Object.assign({
+          id_payment: data.data.xendit_response.id,
+          virtual_account:
+            data.data.xendit_response.paymentMethod.virtualAccount
+              .channelProperties.virtualAccountNumber || null,
+          qr_code:
+            data.data.xendit_response.paymentMethod.qrCode.channelProperties
+              .qrString || null,
+          expired:
+            selectedMethodPembayaran?.jenis === "QR"
+              ? data.data.xendit_response.paymentMethod.qrCode.channelProperties
+                  .expiresAt
+              : data.data.xendit_response.paymentMethod.virtualAccount
+                  .channelProperties.expiresAt,
+          channel:
+            selectedMethodPembayaran?.jenis === "QR"
+              ? data.data.xendit_response.paymentMethod.qrCode.channelCode
+              : data.data.xendit_response.paymentMethod.virtualAccount
+                  .channelCode,
+          amount: data.data.xendit_response.amount,
+          type: data.xendit_response.paymentMethod.type,
+        });
+        localStorage.setItem("payment", JSON.stringify(payment));
+        setDetailPayment(payment);
+      }
       showSuccessAlert("Berhasil", data.message);
     } catch (err) {
       showErrorAlert("Error", err.message);
@@ -256,30 +273,65 @@ const ReservationForm = () => {
   };
 
   const fetchCekStatus = async () => {
-    setIsLoading(true);
+    setLoadingBackdrop(true);
     try {
       const res = await fetch(
         `${url}client/pelanggan/cek-status-pembayaran?id_pr=${detailPayment.id_payment}`
       );
       const data = await res.json();
       if (data.data.status === "PENDING") {
-        showErrorAlert(
-          "Peringatan",
-          "Pembayaran anda belum dilunasi. Mohon untuk segera dilunasi"
-        );
+        const nowDate = new Date();
+        const expDate = new Date(detailPayment?.expired);
+        if (expDate > nowDate) {
+          showErrorAlert(
+            "Peringatan",
+            "Pembayaran anda belum dilunasi. Mohon untuk segera dilunasi"
+          );
+        } else {
+          showErrorAlert("Peringatan", "Pembayaran anda telah expired.");
+          localStorage.removeItem("payment");
+          setDetailPayment(null);
+        }
+        if (detailPayment.type === "VIRTUAL_ACCOUNT") {
+          setShowRinciPembayaran(true);
+        } else if (detailPayment.type === "QR_CODE") setShowQr(true);
       } else {
-        localStorage.removeItem("payment");
-        setDetailPayment(null);
         setShowRinciPembayaran(false);
-        showSuccessAlert(
-          "Berhasil",
-          "Pembayaran anda telah lunas. Terima kasih telah berkunjung"
-        );
+        setShowQr(false);
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil",
+          text: "Pembayaran anda telah selesai. Terima kasih telah berkunjung",
+        }).then(() => {
+          localStorage.removeItem("payment");
+          setDetailPayment(null);
+          downloadBuktiBooking("bukti_booking.png");
+        });
       }
     } catch (err) {
       showErrorAlert("Error", err.message);
     } finally {
-      setIsLoading(false);
+      set;
+    }
+  };
+
+  const downloadBuktiBooking = async (filename) => {
+    setLoadingBackdrop(true);
+    try {
+      const res = await fetch(
+        `${url}client/pelanggan/cetak-struk?id_kunjungan=${idKunjungan}`
+      );
+      const blob = await res.json();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      showErrorAlert("Error", err.message);
     }
   };
 
@@ -297,13 +349,8 @@ const ReservationForm = () => {
     const cekStatus = () => {
       const payment = JSON.parse(localStorage.getItem("payment"));
       if (payment) {
-        const nowDate = new Date();
-        const expDate = new Date(payment.expired);
-        if (expDate > nowDate) {
-          setDetailPayment(payment);
-        } else {
-          localStorage.removeItem("payment");
-        }
+        setDetailPayment(payment);
+        fetchCekStatus();
       }
     };
 
@@ -312,14 +359,56 @@ const ReservationForm = () => {
     cekStatus();
   }, []);
 
-  useEffect(() => {
-    if (detailPayment) {
-      setShowRinciPembayaran(true);
-    }
-  }, [detailPayment]);
+  // useEffect(() => {
+  //   if (detailPayment) {
+  //     switch (detailPayment.type) {
+  //       case "VIRTUAL_ACCOUNT":
+  //         setShowRinciPembayaran(true);
+  //         break;
+  //       case "QR_CODE":
+  //         setShowQr(tru);
+  //         break;
+  //       default:
+  //     }
+  //   }
+  // }, [detailPayment]);
 
   return (
     <>
+      {loadingBackdrop && <Loading color="orange" />}
+      <Modal
+        isOpen={showQr}
+        times={false}
+        showFooter={false}
+        title={"Pembayaran QR Code"}
+      >
+        <p>Pemesanan Anda</p>
+        <p className="font-bold mb-4">Booking Kunjungan</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between">
+            <p>Merchant</p>
+            <p>: {detailPayment?.channel}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Nominal</p>
+            <p className="w-[40%]">: {currencyFormat(detailPayment?.amount)}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Tanggal Kadaluarsa</p>
+            <p className="w-[40%]">
+              : {dayjs(detailPayment?.expired).format("DD MMM YYYY HH:mm")}
+            </p>
+          </div>
+        </div>
+        <div className="py-8 flex justify-center items-center">
+          <div className="border-2 border-orange-500 p-8 rounded-md">
+            <QRCode value={detailPayment?.qr_code} size={150} />
+            <button className="bg-orange-500 py-1 px-4 rounded-sm w-full text-white mt-4 hover:shadow-md">
+              Cek Pembayaran
+            </button>
+          </div>
+        </div>
+      </Modal>
       <Modal
         isOpen={showRinciPembayaran}
         times={false}
@@ -449,7 +538,7 @@ const ReservationForm = () => {
 
           <div className="mb-4 w-full md:flex md:justify-between">
             <input
-              type="datetime-local"
+              type="date"
               id="tgl_kunjungan"
               name="tgl_kunjungan"
               disabled={idPenjualan}
@@ -459,6 +548,19 @@ const ReservationForm = () => {
               style={{ color: "#FF7517" }}
             />
             <input
+              type="time"
+              id="jam"
+              name="jam"
+              disabled={idPenjualan}
+              value={formData.jam}
+              onChange={handleChange}
+              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            />
+          </div>
+
+          <div className="mb-4 w-full md:flex md:justify-between">
+            <input
               type="number"
               id="jumlah_orang"
               name="jumlah_orang"
@@ -466,12 +568,9 @@ const ReservationForm = () => {
               placeholder="Jumlah Orang"
               value={formData.jumlah_orang}
               onChange={handleChange}
-              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
               style={{ color: "#FF7517" }}
             />
-          </div>
-
-          <div className="mb-4 w-full">
             <input
               id="email"
               disabled={idPenjualan}
@@ -480,7 +579,7 @@ const ReservationForm = () => {
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
               style={{ color: "#FF7517" }}
             ></input>
           </div>
@@ -517,7 +616,7 @@ const ReservationForm = () => {
           <button
             type="submit"
             disabled={idPenjualan || isLoading}
-            className="p-1 w-28 rounded-sm flex justify-center text-white font-semibold focus:outline-none focus:ring-0 focus:border-none bg-orange-500"
+            className="p-1 w-28 rounded-sm flex justify-center text-white font-semibold focus:outline-none focus:ring-0 focus:border-none bg-orange-500 disabled:bg-orange-300"
           >
             {isLoading ? (
               <svg
@@ -552,10 +651,7 @@ const ReservationForm = () => {
                   <button
                     disabled={idPenjualanMenu}
                     onClick={() => handleAddMenu()}
-                    className="p-1 w-28 rounded-sm text-sm text-white"
-                    style={{
-                      background: "#FF7517",
-                    }}
+                    className="p-1 w-28 rounded-sm text-sm text-white disabled:bg-orange-300 bg-orange-500"
                     type="button"
                   >
                     Tambah
@@ -647,7 +743,7 @@ const ReservationForm = () => {
                   <button
                     type="button"
                     disabled={loadingMenu || idPenjualanMenu}
-                    className="bg-orange-500 text-white p-1 w-28 rounded-sm hover:shadow-md"
+                    className="bg-orange-500 disabled:bg-orange-300 text-white p-1 w-28 rounded-sm hover:shadow-md"
                     onClick={() => handleSimpanPesanan()}
                   >
                     {loadingMenu ? (
@@ -776,8 +872,9 @@ const ReservationForm = () => {
                   </div>
                   <div className="w-1/2  float-right">
                     <button
+                      disabled={isLoading}
                       type="button"
-                      className="bg-orange-500 text-white p-1 w-full rounded-sm hover:shadow-md mt-4 flex justify-center"
+                      className="bg-orange-500 disabled:bg-orange-300 text-white p-1 w-full rounded-sm hover:shadow-md mt-4 flex justify-center"
                       onClick={() => fetchBayarBooking()}
                     >
                       {isLoading ? (
