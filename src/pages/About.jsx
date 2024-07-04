@@ -32,7 +32,7 @@ const About = () => {
               color: "#FF7517",
             }}
           >
-            About Us
+            Tentang Kami
           </h4>
           <h1
             style={{

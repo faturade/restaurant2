@@ -13,14 +13,6 @@ const Header = () => {
         <div className="text-white font-bold">
           <img src={Logo} alt="Logo" style={{ height: '155px', width: '220px' }} />
         </div>
-        {/* <div className="flex items-center space-x-4 justify-center">
-          <Link to="/reservation" className="text-custom-orange font-bold" style={{ fontSize: '14px', textAlign: 'center', justifyContent: 'center', padding: '1rem 1.5rem' }}>
-            <Button
-              text="Reservation"
-              onClick={() => console.log('Reservation clicked')}
-            />
-          </Link>
-        </div> */}
       </div>
     </header>
   );

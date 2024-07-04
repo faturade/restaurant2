@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faTwitter, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebook,
+  faTwitter,
+  faInstagram,
+  faLinkedin,
+} from "@fortawesome/free-brands-svg-icons";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +27,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link to="/about" className="text-black hover:text-gray-700">
-              About
+              Tentang
             </Link>
           </li>
           <li>
@@ -32,28 +37,48 @@ const Navbar = () => {
           </li>
           <li>
             <Link to="/reservation" className="text-black hover:text-gray-700">
-              Reservation
+              Reservasi
             </Link>
           </li>
           <li>
             <Link to="/contact" className="text-black hover:text-gray-700">
-              Contact
+              Kontak
             </Link>
           </li>
         </ul>
 
         {/* Social media icons */}
         <div className="hidden md:flex space-x-4">
-          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-black">
+          <a
+            href="https://www.facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
             <FontAwesomeIcon icon={faFacebook} />
           </a>
-          <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="text-black">
+          <a
+            href="https://www.twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
             <FontAwesomeIcon icon={faTwitter} />
           </a>
-          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-black">
+          <a
+            href="https://www.instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
             <FontAwesomeIcon icon={faInstagram} />
           </a>
-          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-black">
+          <a
+            href="https://www.linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
             <FontAwesomeIcon icon={faLinkedin} />
           </a>
         </div>
@@ -86,22 +111,52 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isOpen && (
         <div className="absolute top-0 right-0 w-3/4 h-screen bg-white p-6 flex flex-col space-y-4 animate-slide-in">
-          <Link to="/" className="text-black hover:text-gray-700">Home</Link>
-          <Link to="/about" className="text-black hover:text-gray-700">About</Link>
-          <Link to="/menu" className="text-black hover:text-gray-700">Menu</Link>
-          <Link to="/reservation" className="text-black hover:text-gray-700">Reservation</Link>
-          <Link to="/contact" className="text-black hover:text-gray-700">Contact</Link>
+          <Link to="/" className="text-black hover:text-gray-700">
+            Home
+          </Link>
+          <Link to="/about" className="text-black hover:text-gray-700">
+            About
+          </Link>
+          <Link to="/menu" className="text-black hover:text-gray-700">
+            Menu
+          </Link>
+          <Link to="/reservation" className="text-black hover:text-gray-700">
+            Reservation
+          </Link>
+          <Link to="/contact" className="text-black hover:text-gray-700">
+            Contact
+          </Link>
           <div className="flex space-x-4">
-            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-black">
+            <a
+              href="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black"
+            >
               <FontAwesomeIcon icon={faFacebook} />
             </a>
-            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="text-black">
+            <a
+              href="https://www.twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black"
+            >
               <FontAwesomeIcon icon={faTwitter} />
             </a>
-            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-black">
+            <a
+              href="https://www.instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black"
+            >
               <FontAwesomeIcon icon={faInstagram} />
             </a>
-            <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-black">
+            <a
+              href="https://www.linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black"
+            >
               <FontAwesomeIcon icon={faLinkedin} />
             </a>
           </div>

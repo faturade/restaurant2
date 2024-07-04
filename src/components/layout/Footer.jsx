@@ -81,7 +81,7 @@ const Footer = () => {
 
         {/* Opening Hours */}
         <div>
-          <h3 className="text-xl font-bold mb-4">Jam Buka</h3>
+          <h3 className="text-xl font-bold mb-4">Jam Operasinal</h3>
           <p className="text-sm">Senin - Minggu 9:00 AM - 9:00 PM</p>
         </div>
       </div>
