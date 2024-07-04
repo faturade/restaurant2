@@ -6,6 +6,7 @@ import AsyncSelect from "react-select/async";
 import { currencyFormat } from "../utils/currency";
 import Swal from "sweetalert2";
 import CountdownTimer from "../components/CountdownTimer";
+import Modal from "../components/Modal";
 
 let url = `https://dt6rn7p5-3000.asse.devtunnels.ms/`;
 const ReservationForm = () => {
@@ -15,6 +16,7 @@ const ReservationForm = () => {
     tgl_kunjungan: "",
     jumlah_orang: "",
     keterangan: "",
+    email: "",
     ada_menu: false,
   });
 
@@ -36,6 +38,8 @@ const ReservationForm = () => {
   const [selectedMethodPembayaran, setSelectedMethodPembayaran] = useState("");
   const [totalMenu, setTotalMenu] = useState(0);
   const [virtualAccount, setVirtualAccount] = useState(null);
+  const [detailPayment, setDetailPayment] = useState(null);
+  const [showRinciPembayaran, setShowRinciPembayaran] = useState(false);
 
   const loadOptions = async (inputValue, callback) => {
     try {
@@ -128,7 +132,6 @@ const ReservationForm = () => {
   const handleSubmit = async (e) => {
     setIsLoading(true);
     e.preventDefault();
-    console.log("submit booking");
 
     const combinedData = {
       ...formData,
@@ -209,6 +212,7 @@ const ReservationForm = () => {
   };
 
   const fetchBayarBooking = async () => {
+    setIsLoading(true);
     const bayarNominal =
       totalMenu + selectedMethodPembayaran.biaya_admin + (totalMenu * 12) / 100;
 
@@ -229,9 +233,53 @@ const ReservationForm = () => {
       if (!(data.meta_data.status <= 400)) {
         throw new Error(data.meta_data.message);
       }
+      const payment = Object.assign({
+        id_payment: data.data.xendit_response.id,
+        virtual_account:
+          data.data.xendit_response.paymentMethod.virtualAccount
+            .channelProperties.virtualAccountNumber,
+        expired:
+          data.data.xendit_response.paymentMethod.virtualAccount
+            .channelProperties.expiresAt,
+        channel:
+          data.data.xendit_response.paymentMethod.virtualAccount.channelCode,
+        amount: data.data.xendit_response.amount,
+      });
+      localStorage.setItem("payment", JSON.stringify(payment));
+      setDetailPayment(payment);
       showSuccessAlert("Berhasil", data.message);
     } catch (err) {
       showErrorAlert("Error", err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchCekStatus = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(
+        `${url}client/pelanggan/cek-status-pembayaran?id_pr=${detailPayment.id_payment}`
+      );
+      const data = await res.json();
+      if (data.data.status === "PENDING") {
+        showErrorAlert(
+          "Peringatan",
+          "Pembayaran anda belum dilunasi. Mohon untuk segera dilunasi"
+        );
+      } else {
+        localStorage.removeItem("payment");
+        setDetailPayment(null);
+        setShowRinciPembayaran(false);
+        showSuccessAlert(
+          "Berhasil",
+          "Pembayaran anda telah lunas. Terima kasih telah berkunjung"
+        );
+      }
+    } catch (err) {
+      showErrorAlert("Error", err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -246,12 +294,91 @@ const ReservationForm = () => {
       setListMetodePembayaran(metodePembayaran);
     };
 
+    const cekStatus = () => {
+      const payment = JSON.parse(localStorage.getItem("payment"));
+      if (payment) {
+        const nowDate = new Date();
+        const expDate = new Date(payment.expired);
+        if (expDate > nowDate) {
+          setDetailPayment(payment);
+        } else {
+          localStorage.removeItem("payment");
+        }
+      }
+    };
+
     getDefaultOptions();
     getMetodePembayaran();
+    cekStatus();
   }, []);
+
+  useEffect(() => {
+    if (detailPayment) {
+      setShowRinciPembayaran(true);
+    }
+  }, [detailPayment]);
 
   return (
     <>
+      <Modal
+        isOpen={showRinciPembayaran}
+        times={false}
+        showFooter={false}
+        title={"Rincian Pembayaran"}
+      >
+        <p className="mb-4">Detail pembayaran anda adalah demikian :</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between">
+            <p>bank</p>
+            <p className="w-[40%]">: {detailPayment?.channel}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>No. Virtual Account</p>
+            <p className="w-[40%]">: {detailPayment?.virtual_account}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Nominal</p>
+            <p className="w-[40%]">: {currencyFormat(detailPayment?.amount)}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Tanggal Kadaluarsa</p>
+            <p className="w-[40%]">
+              : {dayjs(detailPayment?.expired).format("DD MMM YYYY HH:mm")}
+            </p>
+          </div>
+          <div className="flex justify-end">
+            <button
+              className="w-28 bg-orange-500 rounded-sm hover:shadow-md text-white text-sm px-2 py-1"
+              onClick={() => fetchCekStatus()}
+            >
+              {isLoading ? (
+                <svg
+                  class="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              ) : (
+                "Cek Pembayaran"
+              )}
+            </button>
+          </div>
+        </div>
+      </Modal>
       <div
         className="relative"
         style={{
@@ -291,7 +418,6 @@ const ReservationForm = () => {
         >
           <div className="text-center mb-8">
             <p style={{ fontSize: "30px", color: "#FF7517" }}>
-              <CountdownTimer expiresAt={"2024-07-04T02:40:41.865"} />
               Ayo booking sekarang !!
             </p>
           </div>
@@ -343,6 +469,20 @@ const ReservationForm = () => {
               className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
               style={{ color: "#FF7517" }}
             />
+          </div>
+
+          <div className="mb-4 w-full">
+            <input
+              id="email"
+              disabled={idPenjualan}
+              name="email"
+              rows="3"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            ></input>
           </div>
 
           <div className="mb-4 w-full">
@@ -637,10 +777,33 @@ const ReservationForm = () => {
                   <div className="w-1/2  float-right">
                     <button
                       type="button"
-                      className="bg-orange-500 text-white p-1 w-full rounded-sm hover:shadow-md mt-4"
+                      className="bg-orange-500 text-white p-1 w-full rounded-sm hover:shadow-md mt-4 flex justify-center"
                       onClick={() => fetchBayarBooking()}
                     >
-                      Bayar Sekarang
+                      {isLoading ? (
+                        <svg
+                          class="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                          ></circle>
+                          <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          ></path>
+                        </svg>
+                      ) : (
+                        "Bayar Sekarang"
+                      )}
                     </button>
                   </div>
                 </div>
