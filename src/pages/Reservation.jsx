@@ -40,11 +40,10 @@ const ReservationForm = () => {
   const [defaultOptions, setDefaultOptions] = useState([]);
   const [selectedMethodPembayaran, setSelectedMethodPembayaran] = useState("");
   const [totalMenu, setTotalMenu] = useState(0);
-  const [virtualAccount, setVirtualAccount] = useState(null);
   const [detailPayment, setDetailPayment] = useState(null);
   const [showRinciPembayaran, setShowRinciPembayaran] = useState(false);
-  const [loadingBackdrop, setLoadingBackdrop] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const [loadingBackdrop, setLoadingBackdrop] = useState(false);
 
   const loadOptions = async (inputValue, callback) => {
     try {
@@ -167,8 +166,11 @@ const ReservationForm = () => {
           tgl_kunjungan: "",
           jumlah_orang: "",
           keterangan: "",
+          email: "",
+          jam: "",
           ada_menu: false,
         });
+        downloadBuktiBooking("bukti_booking.pdf", data.data.id_kunjungan);
       } else {
         setShowMenu(true);
       }
@@ -235,36 +237,47 @@ const ReservationForm = () => {
         body: JSON.stringify(requestBody),
       });
       const data = await res.json();
-      if (!(data.meta_data.status <= 400)) {
+      if (!(data.meta_data?.status <= 400)) {
         throw new Error(data.meta_data.message);
       }
       if (selectedMethodPembayaran?.jenis !== "TUNAI") {
         const payment = Object.assign({
           id_payment: data.data.xendit_response.id,
           virtual_account:
-            data.data.xendit_response.paymentMethod.virtualAccount
-              .channelProperties.virtualAccountNumber || null,
+            data.data?.xendit_response.paymentMethod?.virtualAccount
+              ?.channelProperties.virtualAccountNumber || null,
           qr_code:
-            data.data.xendit_response.paymentMethod.qrCode.channelProperties
+            data.data?.xendit_response.paymentMethod?.qrCode?.channelProperties
               .qrString || null,
           expired:
             selectedMethodPembayaran?.jenis === "QR"
-              ? data.data.xendit_response.paymentMethod.qrCode.channelProperties
-                  .expiresAt
-              : data.data.xendit_response.paymentMethod.virtualAccount
-                  .channelProperties.expiresAt,
+              ? data.data?.xendit_response.paymentMethod?.qrCode
+                  ?.channelProperties.expiresAt
+              : data.data?.xendit_response.paymentMethod?.virtualAccount
+                  ?.channelProperties.expiresAt,
           channel:
             selectedMethodPembayaran?.jenis === "QR"
-              ? data.data.xendit_response.paymentMethod.qrCode.channelCode
-              : data.data.xendit_response.paymentMethod.virtualAccount
+              ? data.data?.xendit_response.paymentMethod?.qrCode.channelCode
+              : data.data?.xendit_response.paymentMethod?.virtualAccount
                   .channelCode,
-          amount: data.data.xendit_response.amount,
-          type: data.xendit_response.paymentMethod.type,
+          amount: data.data?.xendit_response.amount,
+          type: data.data?.xendit_response.paymentMethod.type,
+          id_kunjungan: idKunjungan,
         });
         localStorage.setItem("payment", JSON.stringify(payment));
         setDetailPayment(payment);
       }
-      showSuccessAlert("Berhasil", data.message);
+      showSuccessAlert("Berhasil", data.meta_data.message);
+      Swal.fire({
+        icon: "success",
+        title: "Berhasil",
+        text: data.message,
+      }).then(() => {
+        if (selectedMethodPembayaran?.jenis === "TUNAI") {
+          downloadBuktiBooking("bukti_booking.pdf", idKunjungan);
+          clearAll();
+        }
+      });
     } catch (err) {
       showErrorAlert("Error", err.message);
     } finally {
@@ -272,14 +285,36 @@ const ReservationForm = () => {
     }
   };
 
+  const clearAll = () => {
+    setFormData({
+      nama: "",
+      nomor_hp: "",
+      tgl_kunjungan: "",
+      jumlah_orang: "",
+      keterangan: "",
+      email: "",
+      jam: "",
+      ada_menu: false,
+    });
+    setShowMenu(false);
+    setIdKunjungan(null);
+    setIdPenjualan(null);
+    setIdPenjualanMenu(null);
+    setSelectedMethodPembayaran(null);
+    setDetailPayment(null);
+  };
+
   const fetchCekStatus = async () => {
     setLoadingBackdrop(true);
     try {
       const res = await fetch(
-        `${url}client/pelanggan/cek-status-pembayaran?id_pr=${detailPayment.id_payment}`
+        `${url}client/pelanggan/cek-status-pembayaran?id_pr=${detailPayment?.id_payment}`
       );
       const data = await res.json();
-      if (data.data.status === "PENDING") {
+      if (!data.data) {
+        throw new Error(data.meta_data.message);
+      }
+      if (data.data?.status === "PENDING") {
         const nowDate = new Date();
         const expDate = new Date(detailPayment?.expired);
         if (expDate > nowDate) {
@@ -292,9 +327,6 @@ const ReservationForm = () => {
           localStorage.removeItem("payment");
           setDetailPayment(null);
         }
-        if (detailPayment.type === "VIRTUAL_ACCOUNT") {
-          setShowRinciPembayaran(true);
-        } else if (detailPayment.type === "QR_CODE") setShowQr(true);
       } else {
         setShowRinciPembayaran(false);
         setShowQr(false);
@@ -303,25 +335,27 @@ const ReservationForm = () => {
           title: "Berhasil",
           text: "Pembayaran anda telah selesai. Terima kasih telah berkunjung",
         }).then(() => {
+          downloadBuktiBooking("bukti_booking.pdf");
           localStorage.removeItem("payment");
           setDetailPayment(null);
-          downloadBuktiBooking("bukti_booking.png");
+          clearAll();
         });
       }
     } catch (err) {
       showErrorAlert("Error", err.message);
     } finally {
-      set;
+      setLoadingBackdrop(false);
     }
   };
 
-  const downloadBuktiBooking = async (filename) => {
+  const downloadBuktiBooking = async (filename, id_kunjungan = null) => {
     setLoadingBackdrop(true);
+    const param = id_kunjungan || detailPayment?.id_kunjungan;
     try {
       const res = await fetch(
-        `${url}client/pelanggan/cetak-struk?id_kunjungan=${idKunjungan}`
+        `${url}client/pelanggan/cetak-struk?id_kunjungan=${param}`
       );
-      const blob = await res.json();
+      const blob = await res.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = downloadUrl;
@@ -332,6 +366,8 @@ const ReservationForm = () => {
       window.URL.revokeObjectURL(downloadUrl);
     } catch (err) {
       showErrorAlert("Error", err.message);
+    } finally {
+      setLoadingBackdrop(false);
     }
   };
 
@@ -350,7 +386,6 @@ const ReservationForm = () => {
       const payment = JSON.parse(localStorage.getItem("payment"));
       if (payment) {
         setDetailPayment(payment);
-        fetchCekStatus();
       }
     };
 
@@ -359,19 +394,23 @@ const ReservationForm = () => {
     cekStatus();
   }, []);
 
-  // useEffect(() => {
-  //   if (detailPayment) {
-  //     switch (detailPayment.type) {
-  //       case "VIRTUAL_ACCOUNT":
-  //         setShowRinciPembayaran(true);
-  //         break;
-  //       case "QR_CODE":
-  //         setShowQr(tru);
-  //         break;
-  //       default:
-  //     }
-  //   }
-  // }, [detailPayment]);
+  useEffect(() => {
+    if (detailPayment) {
+      if (!selectedMethodPembayaran) {
+        fetchCekStatus();
+      }
+      console.log(detailPayment);
+      switch (detailPayment?.type) {
+        case "VIRTUAL_ACCOUNT":
+          setShowRinciPembayaran(true);
+          break;
+        case "QR_CODE":
+          setShowQr(true);
+          break;
+        default:
+      }
+    }
+  }, [detailPayment]);
 
   return (
     <>
@@ -387,7 +426,7 @@ const ReservationForm = () => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
             <p>Merchant</p>
-            <p>: {detailPayment?.channel}</p>
+            <p className="w-[40%]">: {detailPayment?.channel}</p>
           </div>
           <div className="flex justify-between">
             <p>Nominal</p>
@@ -403,7 +442,10 @@ const ReservationForm = () => {
         <div className="py-8 flex justify-center items-center">
           <div className="border-2 border-orange-500 p-8 rounded-md">
             <QRCode value={detailPayment?.qr_code} size={150} />
-            <button className="bg-orange-500 py-1 px-4 rounded-sm w-full text-white mt-4 hover:shadow-md">
+            <button
+              className="bg-orange-500 py-1 px-4 rounded-sm w-full text-white mt-4 hover:shadow-md"
+              onClick={() => fetchCekStatus()}
+            >
               Cek Pembayaran
             </button>
           </div>

@@ -17,7 +17,7 @@ const Modal = ({ isOpen, onClose, title, times, showFooter, children }) => {
   if (!showOverlay) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-40">
       <div
         className={`absolute inset-0 bg-gray-600 transition-opacity duration-300 ${
           showContent ? "opacity-75" : "opacity-0"
