@@ -49,9 +49,9 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-around px-4 mx-auto">
+      <div className="bg-gray-800 text-white p-8 flex flex-col md:flex-row justify-around px-4 mx-auto gap-10">
         {/* Contact Information */}
-        <div>
+        <div className="flex flex-col items-center md:block">
           <h3 className="text-xl font-bold mb-4">Kontak Kami</h3>
           <p className="text-sm">Jl. Tarutung Desa Purbatua</p>
           <p className="text-sm">0821-6772-9018</p>
@@ -80,7 +80,7 @@ const Footer = () => {
         </div>
 
         {/* Opening Hours */}
-        <div>
+        <div className="flex flex-col items-center md:block">
           <h3 className="text-xl font-bold mb-4">Jam Operasinal</h3>
           <p className="text-sm">Senin - Minggu 9:00 AM - 9:00 PM</p>
         </div>

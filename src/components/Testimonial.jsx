@@ -10,17 +10,19 @@ const testimonials = [
   {
     name: "Putri Mulyani",
     text: "Saya sangat terkesan dengan desain interior yang nyaman dan pelayanan yang ramah di Restoran Ikan Mas Sinyarnyar. Pengalaman makan malam yang menyenangkan!",
-    image: "https://marhatahata.com/wp-content/uploads/2019/12/WhatsApp-Image-2019-12-14-at-20.34.31-645x862.jpeg"
+    image:
+      "https://marhatahata.com/wp-content/uploads/2019/12/WhatsApp-Image-2019-12-14-at-20.34.31-645x862.jpeg",
   },
   {
     name: "Sopiah",
     text: "Sebagai seorang manajer proyek, saya menghargai kecepatan dan keakuratan pelayanan di Restoran Ikan Mas Sinyarnyar. Makanan mereka selalu segar dan enak.",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMkIiZiDGDsOKg2-UPt5X_J4LjGtUOB7kSyg&s"
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMkIiZiDGDsOKg2-UPt5X_J4LjGtUOB7kSyg&s",
   },
   {
     name: "Bunga Sari",
     text: "Kualitas makanan di Restoran Ikan Mas Sinyarnyar sungguh luar biasa. Saya merekomendasikan tempat ini kepada siapa pun yang mencari pengalaman kuliner yang istimewa.",
-    image: "https://i.ytimg.com/vi/2eeTE9tdhq0/sddefault.jpg"
+    image: "https://i.ytimg.com/vi/2eeTE9tdhq0/sddefault.jpg",
   },
   {
     name: "Mypa Dea",
@@ -38,6 +40,7 @@ const testimonials = [
 
 function TestimonialSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
@@ -51,6 +54,16 @@ function TestimonialSlider() {
     );
   };
 
+  const updateIsMobile = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  useEffect(() => {
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile);
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
@@ -59,8 +72,8 @@ function TestimonialSlider() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-orange-500">
-      <div className="max-w-6xl p-4 overflow-hidden">
+    <div className="flex flex-col items-center justify-center bg-orange-500 p-10">
+      <div className="w-full overflow-hidden">
         <h2
           className="mb-8 "
           style={{
@@ -74,18 +87,30 @@ function TestimonialSlider() {
           Testimoni
         </h2>
         <p className="text-white text-center mb-2 font-extralight">
-          Lihat, apa kata pelanggan kami? 
+          Lihat, apa kata pelanggan kami?
         </p>
         <p className="text-white text-center mb-8 font-extralight">
-        Testimoni dari pelanggan kami memberikan pandangan langsung tentang pengalaman mereka dengan produk atau layanan kami. Dari ulasan yang antusias hingga cerita penggunaan yang inspiratif, setiap testimoni memperkuat komitmen kami untuk menyediakan pengalaman terbaik bagi pelanggan. Mereka adalah cerminan dari kepuasan dan kepercayaan yang dibangun dengan hati-hati selama perjalanan kami
+          Testimoni dari pelanggan kami memberikan pandangan langsung tentang
+          pengalaman mereka dengan produk atau layanan kami. Dari ulasan yang
+          antusias hingga cerita penggunaan yang inspiratif, setiap testimoni
+          memperkuat komitmen kami untuk menyediakan pengalaman terbaik bagi
+          pelanggan. Mereka adalah cerminan dari kepuasan dan kepercayaan yang
+          dibangun dengan hati-hati selama perjalanan kami
         </p>
-        <div className="relative w-full max-w-6xl p-4 overflow-hidden">
+        <div className="relative w-full overflow-hidden">
           <div
             className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${(currentIndex * 100) / 3}%)` }}
+            style={{
+              transform: `translateX(-${
+                (currentIndex * 100) / (isMobile ? 1 : 3)
+              }%)`,
+            }}
           >
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="w-1/3 flex-shrink-0 p-4">
+              <div
+                key={index}
+                className={`${isMobile ? "w-full" : "w-1/3"} flex-shrink-0 p-4`}
+              >
                 <div className="flex flex-col items-center bg-black p-6 shadow-lg h-full">
                   <img
                     src={testimonial.image}

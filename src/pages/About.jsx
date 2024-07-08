@@ -20,8 +20,8 @@ const About = () => {
   return (
     <div>
       {/* <StyleGuild activeButton="About" /> */}
-      <div className="flex flex-col md:flex-row items-center justify-center bg-gray-100 min-h-screen p-6">
-        <div className="content md:w-1/2 p-8" style={{ marginLeft: "4rem" }}>
+      <div className="flex flex-col md:flex-row items-center justify-center bg-gray-100 p-6 2xl:px-56">
+        <div className="content md:w-1/2 p-8">
           <h4
             className="mb-4"
             style={{
@@ -72,10 +72,7 @@ const About = () => {
             }}
           />{" "}
           {/* Adjusted size */}
-          <div
-            className="absolute transform translate-x-10 translate-y-10 bg-white p-4 shadow-lg w-3/4 max-w-xs text-center flex flex-col items-center"
-            style={{ bottom: "-2rem", right: "20rem" }}
-          >
+          <div className="absolute bg-white p-4 shadow-lg w-3/4 max-w-xs text-center flex flex-col items-center bottom-0 left-0">
             {" "}
             {/* Adjusted bottom and right */}
             <img
@@ -94,14 +91,14 @@ const About = () => {
       </div>
 
       <div
-        className="bg-cover bg-center w-full max-h-96 p-8"
+        className="bg-cover bg-center p-8"
         style={{
           backgroundImage: `url(${aboutImage})`,
           backgroundColor: "rgba(0, 0, 0, 0.7)",
         }}
       >
-        <div className="flex justify-around items-center p-4">
-          <div className="text-white mx-4 flex flex-col items-center border-r-2 border-white">
+        <div className="flex justify-around items-center p-4 flex-wrap lg:flex-nowrap gap-4">
+          <div className="text-white flex flex-col items-center border-x border-white flex-grow xl:flex-1 h-52 p-2">
             <FontAwesomeIcon icon={faCarrot} className="text-4xl mb-2" />
             <h4 className="text-xl font-bold mb-2">Bahan Segar</h4>
             <p className="text-center">
@@ -109,7 +106,7 @@ const About = () => {
               cermat untuk menjamin kualitas setiap hidangan yang kami sajikan.
             </p>
           </div>
-          <div className="text-white mx-4 flex flex-col items-center border-r-2 border-white">
+          <div className="text-white  flex flex-col items-center border-x border-white flex-grow xl:flex-1 h-52 p-2">
             <FontAwesomeIcon icon={faMortarPestle} className="text-4xl mb-2" />
             <h4 className="text-xl font-bold mb-2">Rempah Tradisional</h4>
             <p className="text-center">
@@ -117,7 +114,7 @@ const About = () => {
               menciptakan cita rasa yang kaya dan unik di setiap hidangan.
             </p>
           </div>
-          <div className="text-white mx-4 flex flex-col items-center border-r-2 border-white">
+          <div className="text-white  flex flex-col items-center border-x border-white flex-grow xl:flex-1 h-52 p-2">
             <FontAwesomeIcon icon={faSmile} className="text-4xl mb-2" />
             <h4 className="text-xl font-bold mb-2">Pelayanan Ramah</h4>
             <p className="text-center">
@@ -126,7 +123,7 @@ const About = () => {
               yang menyenangkan.
             </p>
           </div>
-          <div className="text-white mx-4 flex flex-col items-center">
+          <div className="text-white  flex flex-col items-center border-x border-white flex-grow xl:flex-1 h-52 p-2">
             <FontAwesomeIcon icon={faHome} className="text-4xl mb-2" />
             <h4 className="text-xl font-bold mb-2">Suasana Nyaman</h4>
             <p className="text-center">

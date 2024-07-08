@@ -84,10 +84,10 @@ const Navbar = () => {
         </div>
 
         {/* Hamburger menu icon */}
-        <div className="md:hidden flex justify-end w-full">
+        <div className="md:hidden p-4 inset-0 flex justify-end w-full h-fit fixed before:content-normal z-50 before:w-screen before:h-full before:bg-orange-700 before:absolute before:inset-0 before:opacity-90">
           <button
             onClick={toggleMenu}
-            className="text-black bg-white p-2 rounded focus:outline-none"
+            className="text-black bg-white p-2 rounded focus:outline-none z-50"
             aria-label="Toggle menu"
           >
             <svg
@@ -109,59 +109,62 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      {isOpen && (
-        <div className="absolute top-0 right-0 w-3/4 h-screen bg-white p-6 flex flex-col space-y-4 animate-slide-in">
-          <Link to="/" className="text-black hover:text-gray-700">
-            Home
-          </Link>
-          <Link to="/about" className="text-black hover:text-gray-700">
-            About
-          </Link>
-          <Link to="/menu" className="text-black hover:text-gray-700">
-            Menu
-          </Link>
-          <Link to="/reservation" className="text-black hover:text-gray-700">
-            Reservation
-          </Link>
-          <Link to="/contact" className="text-black hover:text-gray-700">
-            Contact
-          </Link>
-          <div className="flex space-x-4">
-            <a
-              href="https://www.facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black"
-            >
-              <FontAwesomeIcon icon={faFacebook} />
-            </a>
-            <a
-              href="https://www.twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black"
-            >
-              <FontAwesomeIcon icon={faTwitter} />
-            </a>
-            <a
-              href="https://www.instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black"
-            >
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
-            <a
-              href="https://www.linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-black"
-            >
-              <FontAwesomeIcon icon={faLinkedin} />
-            </a>
-          </div>
+
+      <div
+        className={`fixed inset-0 z-50 w-3/4 h-screen bg-white p-6 flex flex-col space-y-4 ${
+          isOpen ? "animate-slide-in" : "animate-slide-out"
+        }`}
+      >
+        <Link to="/" className="text-black hover:text-gray-700">
+          Home
+        </Link>
+        <Link to="/about" className="text-black hover:text-gray-700">
+          About
+        </Link>
+        <Link to="/menu" className="text-black hover:text-gray-700">
+          Menu
+        </Link>
+        <Link to="/reservation" className="text-black hover:text-gray-700">
+          Reservation
+        </Link>
+        <Link to="/contact" className="text-black hover:text-gray-700">
+          Contact
+        </Link>
+        <div className="flex space-x-4">
+          <a
+            href="https://www.facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
+            <FontAwesomeIcon icon={faFacebook} />
+          </a>
+          <a
+            href="https://www.twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
+            <FontAwesomeIcon icon={faTwitter} />
+          </a>
+          <a
+            href="https://www.instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
+            <FontAwesomeIcon icon={faInstagram} />
+          </a>
+          <a
+            href="https://www.linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black"
+          >
+            <FontAwesomeIcon icon={faLinkedin} />
+          </a>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

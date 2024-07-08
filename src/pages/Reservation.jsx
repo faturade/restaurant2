@@ -38,6 +38,9 @@ const ReservationForm = () => {
   const [listMetodePembayaran, setListMetodePembayaran] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [defaultOptions, setDefaultOptions] = useState([]);
+  const [defaultOptionsJumlahOrang, setDefaultOptionsJumlahOrang] = useState(
+    []
+  );
   const [selectedMethodPembayaran, setSelectedMethodPembayaran] = useState("");
   const [totalMenu, setTotalMenu] = useState(0);
   const [detailPayment, setDetailPayment] = useState(null);
@@ -57,6 +60,21 @@ const ReservationForm = () => {
         value: item.id,
         label: item.label,
         harga: item.harga,
+      }));
+      callback(options);
+    } catch (err) {
+      callback([]);
+    }
+  };
+
+  const loadOptionsJumlahOrang = async (_inputValue, callback) => {
+    try {
+      const res = await fetch(`${url}client/pelanggan/resource-meja`);
+      const data = await res.json();
+      console.log(data);
+      const options = data.list((item) => ({
+        value: item.kapasitas,
+        label: `${item.kapasitas} orang`,
       }));
       callback(options);
     } catch (err) {
@@ -87,7 +105,7 @@ const ReservationForm = () => {
           id_penjualan: idPenjualan || "",
           menu: listMenu.map((menu) => ({
             id_menu: menu.id_menu,
-            qty: menu.qty,
+            qty: parseInt(menu.qty),
           })),
         }),
       });
@@ -140,6 +158,7 @@ const ReservationForm = () => {
     const combinedData = {
       ...formData,
       tgl_kunjungan: dayjs(e.tgl_kunjungan).format("YYYY-MM-DD HH:mm"),
+      jumlah_orang: formData.jumlah_orang.value,
     };
 
     try {
@@ -197,6 +216,27 @@ const ReservationForm = () => {
         label: item.label,
         harga: item.harga,
       }));
+    } catch (error) {
+      console.error("Error fetching default options:", error);
+      return [];
+    }
+  };
+
+  const fetchDefaultOptionsJumlahOrang = async () => {
+    try {
+      const response = await fetch(`${url}client/pelanggan/resource-meja`);
+      const data = await response.json();
+      const options = data.data.list.map((item) => ({
+        value: item.kapasitas,
+        label: `${String(item.kapasitas)} orang`,
+      }));
+      const result = options.reduce((unique, o) => {
+        if (!unique?.some((obj) => obj.value === o.value)) {
+          unique.push(o);
+        }
+        return unique;
+      }, []);
+      return result;
     } catch (error) {
       console.error("Error fetching default options:", error);
       return [];
@@ -377,6 +417,11 @@ const ReservationForm = () => {
       setDefaultOptions(options);
     };
 
+    const getDefaultOptionsJumlahOrang = async () => {
+      const options = await fetchDefaultOptionsJumlahOrang();
+      setDefaultOptionsJumlahOrang(options);
+    };
+
     const getMetodePembayaran = async () => {
       const metodePembayaran = await fetchMetodePembayaran();
       setListMetodePembayaran(metodePembayaran);
@@ -390,6 +435,7 @@ const ReservationForm = () => {
     };
 
     getDefaultOptions();
+    getDefaultOptionsJumlahOrang();
     getMetodePembayaran();
     cekStatus();
   }, []);
@@ -584,6 +630,7 @@ const ReservationForm = () => {
               id="tgl_kunjungan"
               name="tgl_kunjungan"
               disabled={idPenjualan}
+              min={dayjs(new Date()).format("YYYY-MM-DD")}
               value={formData.tgl_kunjungan}
               onChange={handleChange}
               className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
@@ -602,16 +649,31 @@ const ReservationForm = () => {
           </div>
 
           <div className="mb-4 w-full md:flex md:justify-between">
-            <input
-              type="number"
-              id="jumlah_orang"
-              name="jumlah_orang"
-              disabled={idPenjualan}
-              placeholder="Jumlah Orang"
+            <AsyncSelect
+              isDisabled={idPenjualan}
+              menuPortalTarget={document.body}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#FF7517",
+                }),
+                singleValue: (base) => ({ ...base, color: "#FF7517" }),
+              }}
+              cacheOptions
+              defaultOptions={defaultOptionsJumlahOrang}
+              loadOptions={loadOptionsJumlahOrang}
+              isMulti={false}
+              isSearchable={false}
+              maxMenuHeight={200}
+              placeholder="Pilih jumlah orang"
               value={formData.jumlah_orang}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  jumlah_orang: e,
+                })
+              }
             />
             <input
               id="email"
@@ -651,7 +713,7 @@ const ReservationForm = () => {
                 onChange={handleChange}
                 className="mr-2"
               />
-              <span>Memesan Menu</span>
+              <span>Pesan Menu</span>
             </label>
           </div>
 
