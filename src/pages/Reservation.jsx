@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import AsyncSelect from "react-select/async";
 import { currencyFormat } from "../utils/currency";
 import Swal from "sweetalert2";
-import CountdownTimer from "../components/CountdownTimer";
 import Modal from "../components/Modal";
 import Loading from "../components/Loading";
 import QRCode from "react-qr-code";
@@ -41,13 +40,14 @@ const ReservationForm = () => {
   const [defaultOptionsJumlahOrang, setDefaultOptionsJumlahOrang] = useState(
     []
   );
+  const [listMejaTersedia, setListMejaTersedia] = useState([]);
   const [selectedMethodPembayaran, setSelectedMethodPembayaran] = useState("");
+  const [selectedMeja, setSelectedMeja] = useState(null);
   const [totalMenu, setTotalMenu] = useState(0);
   const [detailPayment, setDetailPayment] = useState(null);
   const [showRinciPembayaran, setShowRinciPembayaran] = useState(false);
   const [showQr, setShowQr] = useState(false);
   const [loadingBackdrop, setLoadingBackdrop] = useState(false);
-
   const loadOptions = async (inputValue, callback) => {
     try {
       const res = await fetch(
@@ -66,7 +66,6 @@ const ReservationForm = () => {
       callback([]);
     }
   };
-
   const loadOptionsJumlahOrang = async (_inputValue, callback) => {
     try {
       const res = await fetch(`${url}client/pelanggan/resource-meja`);
@@ -81,7 +80,6 @@ const ReservationForm = () => {
       callback([]);
     }
   };
-
   const handleAddMenu = () => {
     setListMenu((prevListMenu) => [
       ...prevListMenu,
@@ -92,7 +90,6 @@ const ReservationForm = () => {
       },
     ]);
   };
-
   const simpanMenu = async () => {
     setLoadingMenu(true);
     try {
@@ -125,7 +122,6 @@ const ReservationForm = () => {
       setLoadingMenu(false);
     }
   };
-
   const handleSimpanPesanan = () => {
     Swal.fire({
       title: "Peringatan!",
@@ -140,7 +136,6 @@ const ReservationForm = () => {
       }
     });
   };
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -150,7 +145,6 @@ const ReservationForm = () => {
       [name]: newValue,
     }));
   };
-
   const handleSubmit = async (e) => {
     setIsLoading(true);
     e.preventDefault();
@@ -158,7 +152,8 @@ const ReservationForm = () => {
     const combinedData = {
       ...formData,
       tgl_kunjungan: dayjs(e.tgl_kunjungan).format("YYYY-MM-DD HH:mm"),
-      jumlah_orang: formData.jumlah_orang.value,
+      jumlah_orang: formData.jumlah_orang,
+      id_meja: selectedMeja,
     };
 
     try {
@@ -189,6 +184,8 @@ const ReservationForm = () => {
           jam: "",
           ada_menu: false,
         });
+        setSelectedMeja(null);
+        getMejaTersedia();
         downloadBuktiBooking("bukti_booking.pdf", data.data.id_kunjungan);
       } else {
         setShowMenu(true);
@@ -206,7 +203,29 @@ const ReservationForm = () => {
       setIsLoading(false);
     }
   };
-
+  const getMejaTersedia = async () => {
+    try {
+      const response = await fetch(
+        `${url}client/pelanggan/resource-meja?tanggal=${
+          formData.tgl_kunjungan
+            ? dayjs(formData.tgl_kunjungan).format("YYYY-MM-DD")
+            : dayjs(new Date()).format("YYYY-MM-DD")
+        }&kapasitas=${formData.jumlah_orang}&jam=${formData.jam}`
+      );
+      const data = await response.json();
+      console.log(data);
+      if (!(data.meta_data.status <= 400)) {
+        throw new Error(data.meta_data.message);
+      }
+      setListMejaTersedia(data.data.list);
+    } catch (err) {
+      Swal.fire({
+        title: "Error",
+        text: err.message,
+        icon: "error",
+      });
+    }
+  };
   const fetchDefaultOptions = async () => {
     try {
       const response = await fetch(`${url}client/menu/resource`);
@@ -221,7 +240,6 @@ const ReservationForm = () => {
       return [];
     }
   };
-
   const fetchDefaultOptionsJumlahOrang = async () => {
     try {
       const response = await fetch(`${url}client/pelanggan/resource-meja`);
@@ -242,7 +260,6 @@ const ReservationForm = () => {
       return [];
     }
   };
-
   const fetchMetodePembayaran = async () => {
     try {
       const res = await fetch(
@@ -257,7 +274,6 @@ const ReservationForm = () => {
       showErrorAlert("Error", err.message);
     }
   };
-
   const fetchBayarBooking = async () => {
     setIsLoading(true);
     const bayarNominal =
@@ -324,7 +340,6 @@ const ReservationForm = () => {
       setIsLoading(false);
     }
   };
-
   const clearAll = () => {
     setFormData({
       nama: "",
@@ -343,7 +358,6 @@ const ReservationForm = () => {
     setSelectedMethodPembayaran(null);
     setDetailPayment(null);
   };
-
   const fetchCekStatus = async () => {
     setLoadingBackdrop(true);
     try {
@@ -387,7 +401,6 @@ const ReservationForm = () => {
       setLoadingBackdrop(false);
     }
   };
-
   const downloadBuktiBooking = async (filename, id_kunjungan = null) => {
     setLoadingBackdrop(true);
     const param = id_kunjungan || detailPayment?.id_kunjungan;
@@ -410,16 +423,18 @@ const ReservationForm = () => {
       setLoadingBackdrop(false);
     }
   };
-
   useEffect(() => {
     const getDefaultOptions = async () => {
       const options = await fetchDefaultOptions();
       setDefaultOptions(options);
     };
 
-    const getDefaultOptionsJumlahOrang = async () => {
-      const options = await fetchDefaultOptionsJumlahOrang();
-      setDefaultOptionsJumlahOrang(options);
+    // const getDefaultOptionsJumlahOrang = async () => {
+    //   const options = await fetchDefaultOptionsJumlahOrang();
+    //   setDefaultOptionsJumlahOrang(options);
+    // };
+    const getListMejaTersedia = async () => {
+      await getMejaTersedia();
     };
 
     const getMetodePembayaran = async () => {
@@ -434,12 +449,12 @@ const ReservationForm = () => {
       }
     };
 
+    getListMejaTersedia();
     getDefaultOptions();
-    getDefaultOptionsJumlahOrang();
+    // getDefaultOptionsJumlahOrang();
     getMetodePembayaran();
     cekStatus();
   }, []);
-
   useEffect(() => {
     if (detailPayment) {
       if (!selectedMethodPembayaran) {
@@ -601,6 +616,65 @@ const ReservationForm = () => {
 
           <div className="mb-4 w-full md:flex md:justify-between">
             <input
+              type="date"
+              id="tgl_kunjungan"
+              name="tgl_kunjungan"
+              disabled={idPenjualan}
+              min={dayjs(new Date()).format("YYYY-MM-DD")}
+              value={formData.tgl_kunjungan}
+              onChange={handleChange}
+              onBlur={getMejaTersedia}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            />
+            <input
+              type="time"
+              id="jam"
+              name="jam"
+              disabled={idPenjualan}
+              value={formData.jam}
+              onChange={handleChange}
+              onBlur={getMejaTersedia}
+              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              style={{ color: "#FF7517" }}
+            />
+          </div>
+
+          <div className="mb-4 w-full">
+            <input
+              placeholder="Jumlah Orang"
+              type="number"
+              value={formData.jumlah_orang}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  jumlah_orang: e.target.value,
+                })
+              }
+              onBlur={getMejaTersedia}
+              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+            />
+          </div>
+
+          <div className="mb-4 w-full border border-orange-500 p-4 flex flex-wrap gap-2 rounded-md">
+            {listMejaTersedia.length > 0 ? (
+              listMejaTersedia?.map((item) => (
+                <div
+                  className={`bg-orange-300 p-2 w-[30%] rounded-md text-white hover:cursor-pointer ${
+                    selectedMeja === item.id ? "bg-orange-400" : ""
+                  }`}
+                  onClick={() => setSelectedMeja(item.id)}
+                >
+                  {String(item.label)}
+                </div>
+              ))
+            ) : (
+              <p className="text-center">Meja Tidak Tersedia</p>
+            )}
+          </div>
+
+          <div className="mb-4 w-full md:flex md:justify-between">
+            <input
               type="text"
               disabled={idPenjualan}
               id="nama"
@@ -625,31 +699,7 @@ const ReservationForm = () => {
           </div>
 
           <div className="mb-4 w-full md:flex md:justify-between">
-            <input
-              type="date"
-              id="tgl_kunjungan"
-              name="tgl_kunjungan"
-              disabled={idPenjualan}
-              min={dayjs(new Date()).format("YYYY-MM-DD")}
-              value={formData.tgl_kunjungan}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            />
-            <input
-              type="time"
-              id="jam"
-              name="jam"
-              disabled={idPenjualan}
-              value={formData.jam}
-              onChange={handleChange}
-              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            />
-          </div>
-
-          <div className="mb-4 w-full md:flex md:justify-between">
-            <AsyncSelect
+            {/* <AsyncSelect
               isDisabled={idPenjualan}
               menuPortalTarget={document.body}
               styles={{
@@ -674,7 +724,7 @@ const ReservationForm = () => {
                   jumlah_orang: e,
                 })
               }
-            />
+            /> */}
             <input
               id="email"
               disabled={idPenjualan}
@@ -683,7 +733,7 @@ const ReservationForm = () => {
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
+              className="mt-4 md:mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
               style={{ color: "#FF7517" }}
             ></input>
           </div>
