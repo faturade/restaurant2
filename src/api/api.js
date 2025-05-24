@@ -1,4 +1,4 @@
-const API_URL = "https://dt6rn7p5-3000.asse.devtunnels.ms/";
+const API_URL = "http://localhost:3000/api/";
 
 const fetchData = async (url, params) => {
   let query = ``;
@@ -19,9 +19,9 @@ const addData = async (newData) => {
     const response = await fetch(`${API_URL}/data`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(newData),
+      body: JSON.stringify(newData)
     });
     return await response.json();
   } catch (error) {
@@ -35,9 +35,9 @@ const updateData = async (id, newData) => {
     const response = await fetch(`${API_URL}/data/${id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(newData),
+      body: JSON.stringify(newData)
     });
     return await response.json();
   } catch (error) {
@@ -51,9 +51,9 @@ const partialUpdateData = async (id, newData) => {
     const response = await fetch(`${API_URL}/data/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(newData),
+      body: JSON.stringify(newData)
     });
     return await response.json();
   } catch (error) {
@@ -65,7 +65,7 @@ const partialUpdateData = async (id, newData) => {
 const deleteData = async (id) => {
   try {
     await fetch(`${API_URL}/data/${id}`, {
-      method: "DELETE",
+      method: "DELETE"
     });
   } catch (error) {
     console.error("Error deleting data:", error);

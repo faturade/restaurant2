@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "../assets/image/resto2.jpg";
 import { showErrorAlert, showSuccessAlert } from "../utils/alertutils";
 import dayjs from "dayjs";
@@ -9,7 +9,7 @@ import Modal from "../components/Modal";
 import Loading from "../components/Loading";
 import QRCode from "react-qr-code";
 
-let url = `https://dt6rn7p5-3000.asse.devtunnels.ms/`;
+let url = `http://localhost:3000/api/`;
 const ReservationForm = () => {
   const [formData, setFormData] = useState({
     nama: "",
@@ -19,7 +19,7 @@ const ReservationForm = () => {
     keterangan: "",
     email: "",
     jam: "",
-    ada_menu: false,
+    ada_menu: false
   });
 
   const [showMenu, setShowMenu] = useState(false);
@@ -31,15 +31,13 @@ const ReservationForm = () => {
     {
       id_menu: "",
       qty: 0,
-      harga: 0,
-    },
+      harga: 0
+    }
   ]);
   const [listMetodePembayaran, setListMetodePembayaran] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [defaultOptions, setDefaultOptions] = useState([]);
-  const [defaultOptionsJumlahOrang, setDefaultOptionsJumlahOrang] = useState(
-    []
-  );
+  const [defaultOptionsJumlahOrang, setDefaultOptionsJumlahOrang] = useState([]);
   const [listMejaTersedia, setListMejaTersedia] = useState([]);
   const [selectedMethodPembayaran, setSelectedMethodPembayaran] = useState("");
   const [selectedMeja, setSelectedMeja] = useState(null);
@@ -50,16 +48,12 @@ const ReservationForm = () => {
   const [loadingBackdrop, setLoadingBackdrop] = useState(false);
   const loadOptions = async (inputValue, callback) => {
     try {
-      const res = await fetch(
-        `${url}client/menu/resource${
-          inputValue ? "?search_key=" + inputValue : ""
-        }`
-      );
+      const res = await fetch(`${url}client/menu/resource${inputValue ? "?search_key=" + inputValue : ""}`);
       const data = await res.json();
       const options = data.data.list.map((item) => ({
         value: item.id,
         label: item.label,
-        harga: item.harga,
+        harga: item.harga
       }));
       callback(options);
     } catch (err) {
@@ -73,7 +67,7 @@ const ReservationForm = () => {
       console.log(data);
       const options = data.list((item) => ({
         value: item.kapasitas,
-        label: `${item.kapasitas} orang`,
+        label: `${item.kapasitas} orang`
       }));
       callback(options);
     } catch (err) {
@@ -86,8 +80,8 @@ const ReservationForm = () => {
       {
         id_menu: "",
         qty: 0,
-        harga: 0,
-      },
+        harga: 0
+      }
     ]);
   };
   const simpanMenu = async () => {
@@ -96,15 +90,15 @@ const ReservationForm = () => {
       const res = await fetch(`${url}client/pelanggan/tambah-menu`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           id_penjualan: idPenjualan || "",
           menu: listMenu.map((menu) => ({
             id_menu: menu.id_menu,
-            qty: parseInt(menu.qty),
-          })),
-        }),
+            qty: parseInt(menu.qty)
+          }))
+        })
       });
       const data = await res.json();
       if (!(data.meta_data?.status <= 400)) {
@@ -129,7 +123,7 @@ const ReservationForm = () => {
       icon: "warning",
       showDenyButton: true,
       denyButtonText: "Tidak",
-      confirmButtonText: "Iya",
+      confirmButtonText: "Iya"
     }).then((res) => {
       if (res.isConfirmed) {
         simpanMenu();
@@ -142,7 +136,7 @@ const ReservationForm = () => {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: newValue,
+      [name]: newValue
     }));
   };
   const handleSubmit = async (e) => {
@@ -153,16 +147,16 @@ const ReservationForm = () => {
       ...formData,
       tgl_kunjungan: dayjs(e.tgl_kunjungan).format("YYYY-MM-DD HH:mm"),
       jumlah_orang: formData.jumlah_orang,
-      id_meja: selectedMeja,
+      id_meja: selectedMeja
     };
 
     try {
       const response = await fetch(`${url}client/pelanggan/reservasi`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(combinedData),
+        body: JSON.stringify(combinedData)
       });
 
       const data = await response.json();
@@ -182,11 +176,11 @@ const ReservationForm = () => {
           keterangan: "",
           email: "",
           jam: "",
-          ada_menu: false,
+          ada_menu: false
         });
         setSelectedMeja(null);
-        getMejaTersedia();
-        downloadBuktiBooking("bukti_booking.pdf", data.data.id_kunjungan);
+        // getMejaTersedia();
+        // downloadBuktiBooking("bukti_booking.pdf", data.data.id_kunjungan);
       } else {
         setShowMenu(true);
       }
@@ -203,29 +197,23 @@ const ReservationForm = () => {
       setIsLoading(false);
     }
   };
-  const getMejaTersedia = async () => {
-    try {
-      const response = await fetch(
-        `${url}client/pelanggan/resource-meja?tanggal=${
-          formData.tgl_kunjungan
-            ? dayjs(formData.tgl_kunjungan).format("YYYY-MM-DD")
-            : dayjs(new Date()).format("YYYY-MM-DD")
-        }&kapasitas=${formData.jumlah_orang}&jam=${formData.jam}`
-      );
-      const data = await response.json();
-      console.log(data);
-      if (!(data.meta_data.status <= 400)) {
-        throw new Error(data.meta_data.message);
-      }
-      setListMejaTersedia(data.data.list);
-    } catch (err) {
-      Swal.fire({
-        title: "Error",
-        text: err.message,
-        icon: "error",
-      });
-    }
-  };
+  // const getMejaTersedia = async () => {
+  //   try {
+  //     const response = await fetch(`${url}client/pelanggan/resource-meja?tanggal=${formData.tgl_kunjungan ? dayjs(formData.tgl_kunjungan).format("YYYY-MM-DD") : dayjs(new Date()).format("YYYY-MM-DD")}&kapasitas=${formData.jumlah_orang}&jam=${formData.jam}`);
+  //     const data = await response.json();
+  //     console.log(data);
+  //     if (!(data.meta_data.status <= 400)) {
+  //       throw new Error(data.meta_data.message);
+  //     }
+  //     setListMejaTersedia(data.data.list);
+  //   } catch (err) {
+  //     Swal.fire({
+  //       title: "Error",
+  //       text: err.message,
+  //       icon: "error"
+  //     });
+  //   }
+  // };
   const fetchDefaultOptions = async () => {
     try {
       const response = await fetch(`${url}client/menu/resource`);
@@ -233,7 +221,7 @@ const ReservationForm = () => {
       return data.data.list.map((item) => ({
         value: item.id,
         label: item.label,
-        harga: item.harga,
+        harga: item.harga
       }));
     } catch (error) {
       console.error("Error fetching default options:", error);
@@ -246,7 +234,7 @@ const ReservationForm = () => {
       const data = await response.json();
       const options = data.data.list.map((item) => ({
         value: item.kapasitas,
-        label: `${String(item.kapasitas)} orang`,
+        label: `${String(item.kapasitas)} orang`
       }));
       const result = options.reduce((unique, o) => {
         if (!unique?.some((obj) => obj.value === o.value)) {
@@ -262,9 +250,7 @@ const ReservationForm = () => {
   };
   const fetchMetodePembayaran = async () => {
     try {
-      const res = await fetch(
-        `${url}client/pelanggan/metode-pembayaran/resource`
-      );
+      const res = await fetch(`${url}client/pelanggan/metode-pembayaran/resource`);
       const data = await res.json();
       if (!(data.meta_data.status <= 400)) {
         throw new Error(data.meta_data.message);
@@ -276,21 +262,20 @@ const ReservationForm = () => {
   };
   const fetchBayarBooking = async () => {
     setIsLoading(true);
-    const bayarNominal =
-      totalMenu + selectedMethodPembayaran.biaya_admin + (totalMenu * 12) / 100;
+    const bayarNominal = totalMenu + selectedMethodPembayaran.biaya_admin + (totalMenu * 12) / 100;
 
     const requestBody = {
       id_kunjungan: idKunjungan,
       bayar_nominal: bayarNominal,
-      id_metode_pembayaran: selectedMethodPembayaran.id,
+      id_metode_pembayaran: selectedMethodPembayaran.id
     };
     try {
       const res = await fetch(`${url}client/pelanggan/bayar-reservasi`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(requestBody)
       });
       const data = await res.json();
       if (!(data.meta_data?.status <= 400)) {
@@ -299,26 +284,13 @@ const ReservationForm = () => {
       if (selectedMethodPembayaran?.jenis !== "TUNAI") {
         const payment = Object.assign({
           id_payment: data.data.xendit_response.id,
-          virtual_account:
-            data.data?.xendit_response.paymentMethod?.virtualAccount
-              ?.channelProperties.virtualAccountNumber || null,
-          qr_code:
-            data.data?.xendit_response.paymentMethod?.qrCode?.channelProperties
-              .qrString || null,
-          expired:
-            selectedMethodPembayaran?.jenis === "QR"
-              ? data.data?.xendit_response.paymentMethod?.qrCode
-                  ?.channelProperties.expiresAt
-              : data.data?.xendit_response.paymentMethod?.virtualAccount
-                  ?.channelProperties.expiresAt,
-          channel:
-            selectedMethodPembayaran?.jenis === "QR"
-              ? data.data?.xendit_response.paymentMethod?.qrCode.channelCode
-              : data.data?.xendit_response.paymentMethod?.virtualAccount
-                  .channelCode,
+          virtual_account: data.data?.xendit_response.paymentMethod?.virtualAccount?.channelProperties.virtualAccountNumber || null,
+          qr_code: data.data?.xendit_response.paymentMethod?.qrCode?.channelProperties.qrString || null,
+          expired: selectedMethodPembayaran?.jenis === "QR" ? data.data?.xendit_response.paymentMethod?.qrCode?.channelProperties.expiresAt : data.data?.xendit_response.paymentMethod?.virtualAccount?.channelProperties.expiresAt,
+          channel: selectedMethodPembayaran?.jenis === "QR" ? data.data?.xendit_response.paymentMethod?.qrCode.channelCode : data.data?.xendit_response.paymentMethod?.virtualAccount.channelCode,
           amount: data.data?.xendit_response.amount,
           type: data.data?.xendit_response.paymentMethod.type,
-          id_kunjungan: idKunjungan,
+          id_kunjungan: idKunjungan
         });
         localStorage.setItem("payment", JSON.stringify(payment));
         setDetailPayment(payment);
@@ -327,10 +299,10 @@ const ReservationForm = () => {
       Swal.fire({
         icon: "success",
         title: "Berhasil",
-        text: data.message,
+        text: data.message
       }).then(() => {
         if (selectedMethodPembayaran?.jenis === "TUNAI") {
-          downloadBuktiBooking("bukti_booking.pdf", idKunjungan);
+          // downloadBuktiBooking("bukti_booking.pdf", idKunjungan);
           clearAll();
         }
       });
@@ -349,7 +321,7 @@ const ReservationForm = () => {
       keterangan: "",
       email: "",
       jam: "",
-      ada_menu: false,
+      ada_menu: false
     });
     setShowMenu(false);
     setIdKunjungan(null);
@@ -361,9 +333,7 @@ const ReservationForm = () => {
   const fetchCekStatus = async () => {
     setLoadingBackdrop(true);
     try {
-      const res = await fetch(
-        `${url}client/pelanggan/cek-status-pembayaran?id_pr=${detailPayment?.id_payment}`
-      );
+      const res = await fetch(`${url}client/pelanggan/cek-status-pembayaran?id_pr=${detailPayment?.id_payment}`);
       const data = await res.json();
       if (!data.data) {
         throw new Error(data.meta_data.message);
@@ -372,10 +342,7 @@ const ReservationForm = () => {
         const nowDate = new Date();
         const expDate = new Date(detailPayment?.expired);
         if (expDate > nowDate) {
-          showErrorAlert(
-            "Peringatan",
-            "Pembayaran anda belum dilunasi. Mohon untuk segera dilunasi"
-          );
+          showErrorAlert("Peringatan", "Pembayaran anda belum dilunasi. Mohon untuk segera dilunasi");
         } else {
           showErrorAlert("Peringatan", "Pembayaran anda telah expired.");
           localStorage.removeItem("payment");
@@ -387,7 +354,7 @@ const ReservationForm = () => {
         Swal.fire({
           icon: "success",
           title: "Berhasil",
-          text: "Pembayaran anda telah selesai. Terima kasih telah berkunjung",
+          text: "Pembayaran anda telah selesai. Terima kasih telah berkunjung"
         }).then(() => {
           downloadBuktiBooking("bukti_booking.pdf");
           localStorage.removeItem("payment");
@@ -405,9 +372,7 @@ const ReservationForm = () => {
     setLoadingBackdrop(true);
     const param = id_kunjungan || detailPayment?.id_kunjungan;
     try {
-      const res = await fetch(
-        `${url}client/pelanggan/cetak-struk?id_kunjungan=${param}`
-      );
+      const res = await fetch(`${url}client/pelanggan/cetak-struk?id_kunjungan=${param}`);
       const blob = await res.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -433,9 +398,9 @@ const ReservationForm = () => {
     //   const options = await fetchDefaultOptionsJumlahOrang();
     //   setDefaultOptionsJumlahOrang(options);
     // };
-    const getListMejaTersedia = async () => {
-      await getMejaTersedia();
-    };
+    // const getListMejaTersedia = async () => {
+    //   await getMejaTersedia();
+    // };
 
     const getMetodePembayaran = async () => {
       const metodePembayaran = await fetchMetodePembayaran();
@@ -449,7 +414,7 @@ const ReservationForm = () => {
       }
     };
 
-    getListMejaTersedia();
+    // getListMejaTersedia();
     getDefaultOptions();
     // getDefaultOptionsJumlahOrang();
     getMetodePembayaran();
@@ -476,12 +441,7 @@ const ReservationForm = () => {
   return (
     <>
       {loadingBackdrop && <Loading color="orange" />}
-      <Modal
-        isOpen={showQr}
-        times={false}
-        showFooter={false}
-        title={"Pembayaran QR Code"}
-      >
+      <Modal isOpen={showQr} times={false} showFooter={false} title={"Pembayaran QR Code"}>
         <p>Pemesanan Anda</p>
         <p className="font-bold mb-4">Booking Kunjungan</p>
         <div className="flex flex-col gap-4">
@@ -495,29 +455,19 @@ const ReservationForm = () => {
           </div>
           <div className="flex justify-between">
             <p>Tanggal Kadaluarsa</p>
-            <p className="w-[40%]">
-              : {dayjs(detailPayment?.expired).format("DD MMM YYYY HH:mm")}
-            </p>
+            <p className="w-[40%]">: {dayjs(detailPayment?.expired).format("DD MMM YYYY HH:mm")}</p>
           </div>
         </div>
         <div className="py-8 flex justify-center items-center">
           <div className="border-2 border-orange-500 p-8 rounded-md">
             <QRCode value={detailPayment?.qr_code} size={150} />
-            <button
-              className="bg-orange-500 py-1 px-4 rounded-sm w-full text-white mt-4 hover:shadow-md"
-              onClick={() => fetchCekStatus()}
-            >
+            <button className="bg-orange-500 py-1 px-4 rounded-sm w-full text-white mt-4 hover:shadow-md" onClick={() => fetchCekStatus()}>
               Cek Pembayaran
             </button>
           </div>
         </div>
       </Modal>
-      <Modal
-        isOpen={showRinciPembayaran}
-        times={false}
-        showFooter={false}
-        title={"Rincian Pembayaran"}
-      >
+      <Modal isOpen={showRinciPembayaran} times={false} showFooter={false} title={"Rincian Pembayaran"}>
         <p className="mb-4">Detail pembayaran anda adalah demikian :</p>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between">
@@ -534,35 +484,14 @@ const ReservationForm = () => {
           </div>
           <div className="flex justify-between">
             <p>Tanggal Kadaluarsa</p>
-            <p className="w-[40%]">
-              : {dayjs(detailPayment?.expired).format("DD MMM YYYY HH:mm")}
-            </p>
+            <p className="w-[40%]">: {dayjs(detailPayment?.expired).format("DD MMM YYYY HH:mm")}</p>
           </div>
           <div className="flex justify-end">
-            <button
-              className="w-28 bg-orange-500 rounded-sm hover:shadow-md text-white text-sm px-2 py-1"
-              onClick={() => fetchCekStatus()}
-            >
+            <button className="w-28 bg-orange-500 rounded-sm hover:shadow-md text-white text-sm px-2 py-1" onClick={() => fetchCekStatus()}>
               {isLoading ? (
-                <svg
-                  class="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  ></circle>
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  ></path>
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                 </svg>
               ) : (
                 "Cek Pembayaran"
@@ -582,7 +511,7 @@ const ReservationForm = () => {
           alignItems: "center",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          position: "relative",
+          position: "relative"
         }}
       >
         <div
@@ -593,205 +522,71 @@ const ReservationForm = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 1,
+            zIndex: 1
           }}
         ></div>
         <form
           onSubmit={(e) => handleSubmit(e)}
-          className="max-w-2xl mx-auto p-6 border shadow-lg bg-white h-[90%] overflow-auto"
+          className="max-w-3xl mx-auto p-6 border shadow-lg bg-white h-[90%] overflow-auto"
           style={{
             width: "1500px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             position: "relative",
-            zIndex: 2,
+            zIndex: 2
           }}
         >
           <div className="text-center mb-8">
-            <p style={{ fontSize: "30px", color: "#FF7517" }}>
-              Ayo booking sekarang !!
-            </p>
+            <p style={{ fontSize: "40px", color: "#000", fontWeight: "bold" }}>Ayo booking sekarang !!</p>
           </div>
 
           <div className="mb-4 w-full md:flex md:justify-between">
-            <input
-              type="date"
-              id="tgl_kunjungan"
-              name="tgl_kunjungan"
-              disabled={idPenjualan}
-              min={dayjs(new Date()).format("YYYY-MM-DD")}
-              value={formData.tgl_kunjungan}
-              onChange={handleChange}
-              onBlur={getMejaTersedia}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            />
-            <input
-              type="time"
-              id="jam"
-              name="jam"
-              disabled={idPenjualan}
-              value={formData.jam}
-              onChange={handleChange}
-              onBlur={getMejaTersedia}
-              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            />
+            <input type="date" id="tgl_kunjungan" name="tgl_kunjungan" disabled={idPenjualan} min={dayjs(new Date()).format("YYYY-MM-DD")} value={formData.tgl_kunjungan} onChange={handleChange} className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-cublack placeholder-grey" />
+            <input type="time" id="jam" name="jam" disabled={idPenjualan} value={formData.jam} onChange={handleChange} className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-grey" />
           </div>
 
           <div className="mb-4 w-full">
             <input
               placeholder="Jumlah Orang"
-              type="number"
+              type="text"
+              required
               value={formData.jumlah_orang}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  jumlah_orang: e.target.value,
+                  jumlah_orang: e.target.value
                 })
               }
-              onBlur={getMejaTersedia}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-            />
-          </div>
-
-          <div className="mb-4 w-full border border-orange-500 p-4 flex flex-wrap gap-2 rounded-md">
-            {listMejaTersedia.length > 0 ? (
-              listMejaTersedia?.map((item) => (
-                <div
-                  className={`bg-orange-300 p-2 w-[30%] rounded-md text-white hover:cursor-pointer ${
-                    selectedMeja === item.id ? "bg-orange-400" : ""
-                  }`}
-                  onClick={() => setSelectedMeja(item.id)}
-                >
-                  {String(item.label)}
-                </div>
-              ))
-            ) : (
-              <p className="text-center">Meja Tidak Tersedia</p>
-            )}
-          </div>
-
-          <div className="mb-4 w-full md:flex md:justify-between">
-            <input
-              type="text"
-              disabled={idPenjualan}
-              id="nama"
-              name="nama"
-              placeholder="Nama"
-              value={formData.nama}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            />
-            <input
-              type="text"
-              id="nomor_hp"
-              disabled={idPenjualan}
-              name="nomor_hp"
-              placeholder="Nomor HP"
-              value={formData.nomor_hp}
-              onChange={handleChange}
-              className="mt-4 md:mt-1 md:ml-4 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
+              className="mt-1 p-2 block w-full border shadow-sm text-black focus:outline-none focus:ring-custom-orange placeholder-grey"
             />
           </div>
 
           <div className="mb-4 w-full md:flex md:justify-between">
-            {/* <AsyncSelect
-              isDisabled={idPenjualan}
-              menuPortalTarget={document.body}
-              styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#FF7517",
-                }),
-                singleValue: (base) => ({ ...base, color: "#FF7517" }),
-              }}
-              cacheOptions
-              defaultOptions={defaultOptionsJumlahOrang}
-              loadOptions={loadOptionsJumlahOrang}
-              isMulti={false}
-              isSearchable={false}
-              maxMenuHeight={200}
-              placeholder="Pilih jumlah orang"
-              value={formData.jumlah_orang}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  jumlah_orang: e,
-                })
-              }
-            /> */}
-            <input
-              id="email"
-              disabled={idPenjualan}
-              name="email"
-              rows="3"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-4 md:mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            ></input>
+            <input type="text" disabled={idPenjualan} id="nama" name="nama" placeholder="Nama" value={formData.nama} onChange={handleChange} className="mt-1 p-2 block w-full border shadow-sm text-black focus:outline-none focus:ring-custom-orange placeholder-grey" />
+            <input type="text" id="nomor_hp" disabled={idPenjualan} name="nomor_hp" placeholder="Nomor HP" value={formData.nomor_hp} onChange={handleChange} className="mt-1 p-2 block w-full border shadow-sm text-black focus:outline-none focus:ring-custom-orange placeholder-grey" />
+          </div>
+
+          <div className="mb-4 w-full md:flex md:justify-between">
+            <input id="email" type="email" disabled={idPenjualan} name="email" rows="3" placeholder="Email" value={formData.email} onChange={handleChange} className="mt-1 p-2 block w-full border shadow-sm text-black focus:outline-none focus:ring-custom-orange placeholder-grey"></input>
           </div>
 
           <div className="mb-4 w-full">
-            <textarea
-              id="keterangan"
-              disabled={idPenjualan}
-              name="keterangan"
-              rows="3"
-              placeholder="Keterangan (opsional)"
-              value={formData.keterangan}
-              onChange={handleChange}
-              className="mt-1 p-2 block w-full border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange"
-              style={{ color: "#FF7517" }}
-            ></textarea>
+            <textarea id="keterangan" disabled={idPenjualan} name="keterangan" rows="3" placeholder="Keterangan (opsional)" value={formData.keterangan} onChange={handleChange} className="mt-1 p-2 block w-full border shadow-sm text-black focus:outline-none focus:ring-custom-orange placeholder-grey"></textarea>
           </div>
 
           <div className="mb-4 w-full">
             <label htmlFor="ada_menu" className="flex items-center">
-              <input
-                type="checkbox"
-                disabled={idPenjualan}
-                id="ada_menu"
-                name="ada_menu"
-                checked={formData.ada_menu}
-                onChange={handleChange}
-                className="mr-2"
-              />
+              <input type="checkbox" disabled={idPenjualan} id="ada_menu" name="ada_menu" checked={formData.ada_menu} onChange={handleChange} className="mr-2" />
               <span>Pesan Menu</span>
             </label>
           </div>
 
-          <button
-            type="submit"
-            disabled={idPenjualan || isLoading}
-            className="p-1 w-28 rounded-sm flex justify-center text-white font-semibold focus:outline-none focus:ring-0 focus:border-none bg-orange-500 disabled:bg-orange-300"
-          >
+          <button type="submit" disabled={idPenjualan || isLoading} className="p-1 w-full rounded-full flex justify-center text-white font-semibold focus:outline-none focus:ring-0 focus:border-none bg-orange-500 disabled:bg-orange-300">
             {isLoading ? (
-              <svg
-                class="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
+              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
               </svg>
             ) : (
               "Booking"
@@ -802,12 +597,7 @@ const ReservationForm = () => {
               <div className="flex justify-between mb-4 border-b pb-2">
                 <h5>Pilihan Menu</h5>
                 <div className="flex gap-2">
-                  <button
-                    disabled={idPenjualanMenu}
-                    onClick={() => handleAddMenu()}
-                    className="p-1 w-28 rounded-sm text-sm text-white disabled:bg-orange-300 bg-orange-500"
-                    type="button"
-                  >
+                  <button disabled={idPenjualanMenu} onClick={() => handleAddMenu()} className="p-1 w-28 rounded-sm text-sm text-white disabled:bg-orange-300 bg-orange-500" type="button">
                     Tambah
                   </button>
                 </div>
@@ -831,9 +621,9 @@ const ReservationForm = () => {
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                       placeholder: (base) => ({
                         ...base,
-                        color: "#FF7517",
+                        color: "#FF7517"
                       }),
-                      singleValue: (base) => ({ ...base, color: "#FF7517" }),
+                      singleValue: (base) => ({ ...base, color: "#FF7517" })
                     }}
                     isMulti={false}
                     maxMenuHeight={200}
@@ -844,7 +634,7 @@ const ReservationForm = () => {
                         newData[key] = {
                           ...newData[key],
                           id_menu: e.value,
-                          harga: e.harga,
+                          harga: e.harga
                         };
                         return newData;
                       })
@@ -857,7 +647,7 @@ const ReservationForm = () => {
                       id="qty-menu"
                       name="qty-menu"
                       placeholder="Qty"
-                      className="w-full py-1 px-2 block border shadow-sm focus:outline-none focus:ring-custom-orange placeholder-custom-orange text-sm"
+                      className="w-full py-3 px-2 block border shadow-sm focus:outline-none focus:ring-cublack text-sm"
                       style={{ color: "#FF7517" }}
                       value={listMenu[key].qty}
                       onChange={(e) =>
@@ -865,19 +655,15 @@ const ReservationForm = () => {
                           const newData = [...prevData];
                           newData[key] = {
                             ...newData[key],
-                            qty: e.target.value,
+                            qty: e.target.value
                           };
                           return newData;
                         })
                       }
                     />
                   </div>
-                  <div className="w-[20%] text-sm">
-                    {currencyFormat(menu.harga)}
-                  </div>
-                  <div className="w-[20%] text-sm">
-                    {currencyFormat(menu.harga * menu.qty)}
-                  </div>
+                  <div className="w-[20%] text-sm">{currencyFormat(menu.harga)}</div>
+                  <div className="w-[20%] text-sm">{currencyFormat(menu.harga * menu.qty)}</div>
                 </div>
               ))}
               <div className="flex justify-between items-center w-[93%] mt-2 text-sm me-auto">
@@ -894,32 +680,11 @@ const ReservationForm = () => {
               <div className="w-full border-t mt-2 flex justify-between py-4 text-sm">
                 <div></div>
                 <div>
-                  <button
-                    type="button"
-                    disabled={loadingMenu || idPenjualanMenu}
-                    className="bg-orange-500 disabled:bg-orange-300 text-white p-1 w-28 rounded-sm hover:shadow-md"
-                    onClick={() => handleSimpanPesanan()}
-                  >
+                  <button type="button" disabled={loadingMenu || idPenjualanMenu} className="bg-orange-500 disabled:bg-orange-300 text-white p-1 w-28 rounded-sm hover:shadow-md" onClick={() => handleSimpanPesanan()}>
                     {loadingMenu ? (
-                      <svg
-                        class="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          class="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          stroke-width="4"
-                        ></circle>
-                        <path
-                          class="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                        ></path>
+                      <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                       </svg>
                     ) : (
                       "Simpan Pesanan"
@@ -935,21 +700,8 @@ const ReservationForm = () => {
                       {listMetodePembayaran
                         ?.filter((val) => val.jenis === "VA")
                         .map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => setSelectedMethodPembayaran(item)}
-                            className={`h-12 w-24 border p-2 rounded-sm ${
-                              selectedMethodPembayaran?.label === item.label
-                                ? "border-orange-500"
-                                : ""
-                            }`}
-                          >
-                            <img
-                              className="h-full w-full"
-                              src={`${url}${item.logo}`}
-                              alt=""
-                            />
+                          <button key={item.id} type="button" onClick={() => setSelectedMethodPembayaran(item)} className={`h-12 w-24 border p-2 rounded-sm ${selectedMethodPembayaran?.label === item.label ? "border-orange-500" : ""}`}>
+                            <img className="h-full w-full" src={`${url}${item.logo}`} alt="" />
                           </button>
                         ))}
                     </div>
@@ -960,21 +712,8 @@ const ReservationForm = () => {
                       {listMetodePembayaran
                         ?.filter((val) => val.jenis === "QR")
                         .map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => setSelectedMethodPembayaran(item)}
-                            className={`h-12 w-24 border p-2 rounded-sm ${
-                              selectedMethodPembayaran?.label === item.label
-                                ? "border-orange-500"
-                                : ""
-                            }`}
-                          >
-                            <img
-                              className="h-full w-full"
-                              src={`${url}${item.logo}`}
-                              alt=""
-                            />
+                          <button key={item.id} type="button" onClick={() => setSelectedMethodPembayaran(item)} className={`h-12 w-24 border p-2 rounded-sm ${selectedMethodPembayaran?.label === item.label ? "border-orange-500" : ""}`}>
+                            <img className="h-full w-full" src={`${url}${item.logo}`} alt="" />
                           </button>
                         ))}
                     </div>
@@ -985,16 +724,7 @@ const ReservationForm = () => {
                       {listMetodePembayaran
                         ?.filter((val) => val.jenis === "TUNAI")
                         .map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => setSelectedMethodPembayaran(item)}
-                            className={`h-12 w-24 border p-2 rounded-sm text-[.7rem] text-nowrap ${
-                              selectedMethodPembayaran?.label === item.label
-                                ? "border-orange-500"
-                                : ""
-                            }`}
-                          >
+                          <button key={item.id} type="button" onClick={() => setSelectedMethodPembayaran(item)} className={`h-12 w-24 border p-2 rounded-sm text-[.7rem] text-nowrap ${selectedMethodPembayaran?.label === item.label ? "border-orange-500" : ""}`}>
                             Bayar ditempat
                           </button>
                         ))}
@@ -1007,51 +737,22 @@ const ReservationForm = () => {
                     </div>
                     <div className="flex justify-between">
                       <div>Biaya Admin</div>
-                      <div>
-                        {currencyFormat(
-                          selectedMethodPembayaran.biaya_admin || 0
-                        )}
-                      </div>
+                      <div>{currencyFormat(selectedMethodPembayaran.biaya_admin || 0)}</div>
                     </div>
                     <div className="flex justify-between">
                       <div>Total Tagihan</div>
-                      <div>
-                        {currencyFormat(
-                          totalMenu +
-                            (totalMenu * 12) / 100 +
-                            selectedMethodPembayaran.biaya_admin
-                        )}
-                      </div>
+                      <div>{currencyFormat(totalMenu + (totalMenu * 12) / 100 + (selectedMethodPembayaran.biaya_admin || 0))}</div>
                     </div>
                   </div>
                   <div className="w-1/2  float-right">
-                    <button
-                      disabled={isLoading}
-                      type="button"
-                      className="bg-orange-500 disabled:bg-orange-300 text-white p-1 w-full rounded-sm hover:shadow-md mt-4 flex justify-center"
-                      onClick={() => fetchBayarBooking()}
-                    >
+                    <button disabled={isLoading} type="button" className="bg-orange-500 disabled:bg-orange-300 text-white p-1 w-full rounded-sm hover:shadow-md mt-4 flex justify-center" onClick={() => fetchBayarBooking()}>
                       {isLoading ? (
-                        <svg
-                          class="animate-spin h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            class="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            stroke-width="4"
-                          ></circle>
-                          <path
-                            class="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                          ></path>
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
+                      ) : selectedMethodPembayaran.jenis === "TUNAI" ? (
+                        "Simpan"
                       ) : (
                         "Bayar Sekarang"
                       )}

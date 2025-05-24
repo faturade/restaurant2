@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         "custom-orange": "#FF7517",
         "custom-border": "#2C2727",
+        
       },
     },
   },
